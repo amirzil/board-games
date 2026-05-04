@@ -1,0 +1,107 @@
+.board {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 12px;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(60, 30, 10, 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(40, 20, 5, 0.4) 0%, transparent 50%),
+    var(--bg-table);
+}
+
+.turnBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(20, 10, 4, 0.7);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 8px;
+}
+
+.turnText {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--text-light);
+  flex: 1;
+}
+
+.lastRound {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gem-red);
+  padding: 3px 10px;
+  background: rgba(192, 57, 43, 0.15);
+  border: 1px solid rgba(192, 57, 43, 0.3);
+  border-radius: 4px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.roundBadge {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: rgba(245, 234, 208, 0.35);
+  text-transform: uppercase;
+}
+
+.mainArea {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.boardLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.noblesRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  background: rgba(20, 10, 4, 0.5);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 10px;
+}
+
+.playerPanels {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tutHighlight {
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 2px rgba(201, 168, 76, 0.7),
+    0 0 24px rgba(201, 168, 76, 0.3);
+  animation: tutPulse 2s ease-in-out infinite;
+}
+
+@keyframes tutPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px rgba(201, 168, 76, 0.7),
+      0 0 24px rgba(201, 168, 76, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(201, 168, 76, 1),
+      0 0 40px rgba(201, 168, 76, 0.5);
+  }
+}

@@ -1,0 +1,64 @@
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 200, 100, 0.6);
+}
+
+.count {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  color: rgba(255, 220, 100, 0.85);
+  flex: 1;
+}
+
+.terrorLabel {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 140, 60, 0.7);
+  background: rgba(255, 100, 40, 0.1);
+  border: 1px solid rgba(255, 120, 40, 0.2);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  position: relative;
+  overflow: visible;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e08020, #f0c040);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 8px rgba(240, 180, 40, 0.4);
+}
+
+.marker {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 1px;
+  transform: translateX(-50%);
+}

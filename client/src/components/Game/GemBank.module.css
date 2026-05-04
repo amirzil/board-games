@@ -1,0 +1,93 @@
+.bank {
+  background: var(--bg-panel);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow-panel);
+  min-width: 90px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-gold);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.tokens {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.tokenStack {
+  position: relative;
+}
+
+.pendingBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--gem-gold);
+  color: #2a1a00;
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.pendingActions {
+  margin-top: 14px;
+  border-top: 1px solid rgba(201, 168, 76, 0.2);
+  padding-top: 12px;
+}
+
+.pendingText {
+  font-size: 0.8rem;
+  color: rgba(245, 234, 208, 0.7);
+  text-align: center;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.pendingBtns {
+  display: flex;
+  gap: 6px;
+}
+
+.confirmBtn, .cancelBtn {
+  flex: 1;
+  padding: 6px 0;
+  border: none;
+  border-radius: 5px;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.confirmBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.confirmBtn {
+  background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dark) 100%);
+  color: var(--bg-dark);
+}
+.confirmBtn:hover:not(:disabled) { opacity: 0.9; }
+
+.cancelBtn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.cancelBtn:hover { background: rgba(255, 255, 255, 0.14); }

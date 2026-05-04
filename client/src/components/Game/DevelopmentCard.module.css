@@ -1,0 +1,151 @@
+.card {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--border-radius-card);
+  background: var(--bg-card);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Tier borders */
+.tier1 { border-color: rgba(160, 82, 45, 0.5); }
+.tier2 { border-color: rgba(168, 170, 176, 0.5); }
+.tier3 { border-color: rgba(201, 168, 76, 0.6); box-shadow: 0 4px 16px rgba(201, 168, 76, 0.2), var(--shadow-card); }
+
+/* Stripe colors */
+.stripe {
+  height: 8px;
+  flex-shrink: 0;
+}
+.stripe_white  { background: linear-gradient(90deg, #ddd, #fff); }
+.stripe_blue   { background: linear-gradient(90deg, #2a5bbf, #5090e0); }
+.stripe_green  { background: linear-gradient(90deg, #1a8040, #40b870); }
+.stripe_red    { background: linear-gradient(90deg, #c0201a, #e05050); }
+.stripe_black  { background: linear-gradient(90deg, #111, #404040); }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px 4px;
+}
+
+.points {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.gemProduced {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.gem_white  { background: radial-gradient(circle at 35% 30%, #fff 0%, #ccc 100%); box-shadow: 0 0 6px rgba(255,255,255,0.5); }
+.gem_blue   { background: radial-gradient(circle at 35% 30%, #7ab8ff 0%, #2a5bbf 100%); box-shadow: 0 0 6px rgba(58,123,213,0.5); }
+.gem_green  { background: radial-gradient(circle at 35% 30%, #5ddb8c 0%, #1a8040 100%); box-shadow: 0 0 6px rgba(39,174,96,0.5); }
+.gem_red    { background: radial-gradient(circle at 35% 30%, #ff6b5b 0%, #c0201a 100%); box-shadow: 0 0 6px rgba(192,57,43,0.5); }
+.gem_black  { background: radial-gradient(circle at 35% 30%, #707070 0%, #1a1a1a 100%); box-shadow: 0 0 6px rgba(80,80,80,0.4); }
+
+/* Cost section */
+.cost {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 8px;
+  margin-top: auto;
+}
+
+.costItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 28px;
+}
+
+.costAmount {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  min-width: 12px;
+}
+
+.discount {
+  font-size: 0.65rem;
+  color: rgba(100, 220, 100, 0.9);
+  font-style: italic;
+}
+
+.cantAfford .costAmount { color: rgba(255, 120, 100, 0.9); }
+
+.cost_white { background: rgba(180, 180, 180, 0.7); }
+.cost_blue  { background: rgba(42, 91, 191, 0.85); }
+.cost_green { background: rgba(26, 128, 64, 0.85); }
+.cost_red   { background: rgba(192, 32, 26, 0.85); }
+.cost_black { background: rgba(20, 20, 20, 0.9); }
+
+/* Tier badge */
+.tierBadge {
+  position: absolute;
+  bottom: 5px;
+  right: 6px;
+  font-family: var(--font-heading);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  color: rgba(0, 0, 0, 0.25);
+}
+.tier2 .tierBadge { color: rgba(120, 120, 120, 0.4); }
+.tier3 .tierBadge { color: rgba(201, 168, 76, 0.5); }
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--border-radius-card);
+}
+
+.actionBtn {
+  width: 70px;
+  padding: 6px 0;
+  border: none;
+  border-radius: 5px;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.1s;
+}
+.actionBtn:hover { transform: scale(1.05); }
+.actionBtn:active { transform: scale(0.97); }
+
+.buyBtn {
+  background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dark) 100%);
+  color: var(--bg-dark);
+}
+
+.reserveBtn {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}

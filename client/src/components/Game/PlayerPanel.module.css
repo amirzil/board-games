@@ -1,0 +1,201 @@
+.panel {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 10px;
+  padding: 12px;
+  min-width: 180px;
+  max-width: 220px;
+  flex: 1;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.panel.active {
+  border-color: rgba(201, 168, 76, 0.6);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.2);
+}
+
+.panel.local {
+  border-color: rgba(39, 174, 96, 0.3);
+}
+
+.panel.active.local {
+  border-color: rgba(201, 168, 76, 0.7);
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.3);
+}
+
+.turnPulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  border: 2px solid var(--accent-gold);
+  pointer-events: none;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: var(--text-light);
+  letter-spacing: 0.04em;
+}
+
+.youTag {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(39, 174, 96, 0.2);
+  color: var(--gem-green);
+  border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.turnTag {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(201, 168, 76, 0.2);
+  color: var(--accent-gold);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+}
+
+.points {
+  text-align: right;
+}
+
+.pointsValue {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  text-shadow: 0 0 10px rgba(201, 168, 76, 0.4);
+  line-height: 1;
+}
+
+.pointsLabel {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  color: rgba(245, 234, 208, 0.4);
+  letter-spacing: 0.06em;
+  display: block;
+  text-align: right;
+}
+
+.nobles {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.nobleEarned {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--accent-gold-dark), var(--accent-gold));
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.gems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.gemItem {
+  position: relative;
+}
+
+.gemTotal {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  color: rgba(245, 234, 208, 0.4);
+  letter-spacing: 0.04em;
+  margin-left: 2px;
+  align-self: center;
+}
+
+.production {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.prodItem {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prodCount {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.prod_white { background: rgba(180, 180, 180, 0.7); }
+.prod_white .prodCount { color: #333; text-shadow: none; }
+.prod_blue  { background: rgba(42, 91, 191, 0.85); }
+.prod_green { background: rgba(26, 128, 64, 0.85); }
+.prod_red   { background: rgba(192, 32, 26, 0.85); }
+.prod_black { background: rgba(30, 30, 30, 0.9); }
+
+.reserved {
+  margin-top: 8px;
+  border-top: 1px solid rgba(201, 168, 76, 0.15);
+  padding-top: 8px;
+}
+
+.reservedLabel {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245, 234, 208, 0.35);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.reservedCards {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.hiddenCard {
+  width: 50px;
+  height: 70px;
+  background: linear-gradient(160deg, rgba(30, 18, 8, 0.8), rgba(15, 8, 2, 0.9));
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 5px;
+}

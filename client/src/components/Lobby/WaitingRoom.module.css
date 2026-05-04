@@ -1,0 +1,166 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-table);
+}
+
+.card {
+  background: linear-gradient(160deg, rgba(30, 18, 8, 0.95) 0%, rgba(20, 10, 4, 0.98) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--accent-gold);
+  text-align: center;
+  letter-spacing: 0.08em;
+  margin-bottom: 28px;
+}
+
+.codeBlock {
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.codeLabel {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-gold);
+  margin-bottom: 6px;
+}
+
+.code {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  color: var(--accent-gold);
+  text-shadow: 0 0 20px rgba(201, 168, 76, 0.5);
+  margin-bottom: 6px;
+}
+
+.codeHint {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(245, 234, 208, 0.4);
+  font-style: italic;
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.playerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 8px;
+}
+
+.playerRow.you {
+  border-color: rgba(201, 168, 76, 0.4);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.playerDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gem-green);
+  box-shadow: 0 0 6px var(--gem-green-glow);
+  flex-shrink: 0;
+}
+
+.playerName {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--text-light);
+}
+
+.hostBadge, .youBadge {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.hostBadge {
+  background: rgba(201, 168, 76, 0.2);
+  color: var(--accent-gold);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+}
+
+.youBadge {
+  background: rgba(39, 174, 96, 0.15);
+  color: var(--gem-green);
+  border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.emptySlot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px dashed rgba(201, 168, 76, 0.15);
+  border-radius: 8px;
+}
+
+.emptyDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 234, 208, 0.2);
+  flex-shrink: 0;
+}
+
+.emptyText {
+  color: rgba(245, 234, 208, 0.2);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.startSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: rgba(245, 234, 208, 0.4);
+  font-style: italic;
+}
+
+.waitingText {
+  text-align: center;
+  color: rgba(245, 234, 208, 0.4);
+  font-style: italic;
+  font-size: 0.95rem;
+}

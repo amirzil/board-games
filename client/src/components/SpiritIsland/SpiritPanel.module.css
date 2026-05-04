@@ -1,0 +1,225 @@
+.panel {
+  background: linear-gradient(160deg, rgba(10, 22, 10, 0.95), rgba(6, 15, 6, 0.98));
+  border: 1px solid rgba(60, 140, 60, 0.25);
+  border-top: 2px solid var(--spirit-color, #7fda80);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ready {
+  border-color: rgba(60, 200, 80, 0.5);
+  background: linear-gradient(160deg, rgba(12, 28, 12, 0.95), rgba(8, 20, 8, 0.98));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.name {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  color: var(--spirit-color, #7fda80);
+  letter-spacing: 0.04em;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.readyBadge {
+  font-family: var(--font-heading);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: #7fda80;
+  background: rgba(60, 200, 80, 0.12);
+  border: 1px solid rgba(60, 200, 80, 0.3);
+  border-radius: 99px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.remoteBadge {
+  font-family: var(--font-heading);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: rgba(180, 200, 180, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  padding: 2px 8px;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  padding: 6px 4px;
+  border: 1px solid rgba(60, 140, 60, 0.15);
+}
+
+.statLabel {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(200, 240, 200, 0.35);
+}
+
+.statVal {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: var(--spirit-color, #7fda80);
+  font-weight: 700;
+}
+
+.statIncome {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  color: rgba(200, 240, 200, 0.35);
+}
+
+/* Grow actions */
+.actions {
+  background: rgba(60, 200, 80, 0.05);
+  border: 1px solid rgba(60, 140, 60, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.growRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.growLabel {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(80, 200, 100, 0.6);
+}
+
+.growBtn {
+  background: rgba(60, 200, 80, 0.08);
+  border: 1px solid rgba(60, 140, 60, 0.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  color: rgba(160, 230, 160, 0.8);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.growBtn:hover {
+  background: rgba(60, 200, 80, 0.15);
+  border-color: rgba(80, 200, 100, 0.5);
+}
+
+.active {
+  background: rgba(60, 200, 80, 0.2) !important;
+  border-color: rgba(80, 200, 100, 0.7) !important;
+  color: #7fda80 !important;
+}
+
+.grewNote {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: rgba(100, 200, 100, 0.6);
+  margin: 0;
+}
+
+/* Hand */
+.handSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.handLabel {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(200, 240, 200, 0.4);
+  flex: 1;
+}
+
+.playedNote {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: rgba(200, 240, 200, 0.3);
+}
+
+.hand {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.emptyHand {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: rgba(200, 240, 200, 0.3);
+  margin: 0;
+}
+
+/* Confirm ready */
+.confirmBtn {
+  background: rgba(60, 200, 80, 0.12);
+  border: 1px solid rgba(80, 200, 100, 0.45);
+  border-radius: 8px;
+  padding: 10px;
+  color: #7fda80;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.confirmBtnDisabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.confirmBtnDisabled:hover {
+  background: rgba(60, 200, 80, 0.12);
+  box-shadow: none;
+}
+
+.confirmBtn:hover {
+  background: rgba(60, 200, 80, 0.22);
+  box-shadow: 0 0 12px rgba(60, 200, 80, 0.2);
+}

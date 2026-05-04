@@ -1,0 +1,63 @@
+:root {
+  /* Backgrounds */
+  --bg-parchment: #f0e0b8;
+  --bg-parchment-dark: #d4c090;
+  --bg-dark: #1a0e06;
+  --bg-table: #2c1a0e;
+  --bg-card: #f5ead0;
+  --bg-card-hover: #fff8e8;
+  --bg-panel: rgba(20, 10, 4, 0.75);
+
+  /* Accent */
+  --accent-gold: #c9a84c;
+  --accent-gold-light: #e8c878;
+  --accent-gold-dark: #8b6914;
+  --accent-bronze: #a0522d;
+  --accent-silver: #a8aab0;
+
+  /* Gem colors */
+  --gem-white: #e8e8e8;
+  --gem-white-glow: rgba(255, 255, 255, 0.9);
+  --gem-blue: #3a7bd5;
+  --gem-blue-glow: rgba(58, 123, 213, 0.8);
+  --gem-green: #27ae60;
+  --gem-green-glow: rgba(39, 174, 96, 0.8);
+  --gem-red: #c0392b;
+  --gem-red-glow: rgba(192, 57, 43, 0.8);
+  --gem-black: #2c2c2c;
+  --gem-black-glow: rgba(80, 80, 80, 0.8);
+  --gem-gold: #f0c040;
+  --gem-gold-glow: rgba(240, 192, 64, 0.9);
+
+  /* Text */
+  --text-primary: #1a0e06;
+  --text-secondary: #5a3a1a;
+  --text-light: #f5ead0;
+  --text-gold: #c9a84c;
+
+  /* Tier colors */
+  --tier1-color: #8b6914;
+  --tier2-color: #a8aab0;
+  --tier3-color: #c9a84c;
+
+  /* Shadows */
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-token: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.7);
+
+  /* Borders */
+  --border-card: 1px solid rgba(201, 168, 76, 0.4);
+  --border-radius-card: 8px;
+  --border-radius-token: 50%;
+
+  /* Fonts */
+  --font-heading: 'Cinzel', serif;
+  --font-body: 'Crimson Text', serif;
+
+  /* Spacing */
+  --card-width: 100px;
+  --card-height: 140px;
+  --token-size: 52px;
+  --noble-size: 90px;
+}

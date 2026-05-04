@@ -1,0 +1,69 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.deck {
+  width: 80px;
+  height: var(--card-height);
+  background: linear-gradient(160deg, rgba(30, 18, 8, 0.9) 0%, rgba(15, 8, 2, 0.95) 100%);
+  border: 2px solid;
+  border-radius: var(--border-radius-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: default;
+  box-shadow: var(--shadow-card);
+  flex-shrink: 0;
+  transition: box-shadow 0.2s;
+}
+
+.deck:not(.empty) { cursor: pointer; }
+.deck:not(.empty):hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.deck.empty {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.deckTier {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.deckCount {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(245, 234, 208, 0.8);
+  line-height: 1;
+}
+
+.deckHint {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245, 234, 208, 0.4);
+}
+
+.cards {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.emptySlot {
+  width: var(--card-width);
+  height: var(--card-height);
+  border: 1px dashed rgba(201, 168, 76, 0.15);
+  border-radius: var(--border-radius-card);
+  flex-shrink: 0;
+}
