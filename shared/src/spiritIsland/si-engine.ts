@@ -354,7 +354,7 @@ function checkWinLose(state: SIGameState): SIGameState {
 }
 
 function runFullInvaderCycle(state: SIGameState): SIGameState {
-  let s = { ...state, phase: 'invader' as const }
+  let s: SIGameState = { ...state, phase: 'invader' }
   s = runRavage(s)
   s = runBuild(s)
   s = runExplore(s)
