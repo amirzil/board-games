@@ -10,11 +10,13 @@ import {
   setGameState,
   setSIGameState,
   setGameType,
+  setSpiritSelection,
   getRoomByPlayerId,
 } from './roomManager'
 
 type AllClientEvents = ClientToServerEvents & {
-  si_start_game: (spiritAssignments: Record<string, string>) => void
+  si_start_game: () => void
+  si_select_spirit: (spiritId: string) => void
   si_action: (action: SIAction) => void
 }
 type AllServerEvents = ServerToClientEvents & {
@@ -30,6 +32,7 @@ function roomInfo(room: ReturnType<typeof getRoom>) {
     code: room.code,
     hostId: room.hostId,
     players: room.players.map((p) => ({ id: p.id, name: p.name })),
+    spiritSelections: room.spiritSelections,
   }
 }
 
@@ -86,20 +89,34 @@ export function registerHandlers(io: IoServer, socket: IoSocket) {
     }
   })
 
-  socket.on('si_start_game', (spiritAssignments: Record<string, string>) => {
+  socket.on('si_select_spirit', (spiritId: string) => {
+    try {
+      const room = getRoomByPlayerId(playerId)
+      if (!room) throw new Error('Not in a room')
+      setSpiritSelection(room.code, playerId, spiritId)
+      io.to(room.code).emit('room_update', roomInfo(room)!)
+    } catch (err: unknown) {
+      socket.emit('error', (err as Error).message)
+    }
+  })
+
+  socket.on('si_start_game', () => {
     try {
       const room = getRoomByPlayerId(playerId)
       if (!room) throw new Error('Not in a room')
       if (room.hostId !== playerId) throw new Error('Only the host can start the game')
       if (room.players.length < 1) throw new Error('Need at least 1 player')
-      if (room.players.length !== Object.keys(spiritAssignments).length) {
-        throw new Error('All players must be assigned a spirit')
-      }
+
+      const unassigned = room.players.filter((p) => !room.spiritSelections[p.id])
+      if (unassigned.length > 0) throw new Error('All players must select a spirit')
+
+      const spirits = Object.values(room.spiritSelections)
+      if (new Set(spirits).size !== spirits.length) throw new Error('Each player must choose a different spirit')
 
       setGameType(room.code, 'spirit-island')
       const siGameState = initSIGame(
         room.players.map((p) => ({ id: p.id, name: p.name })),
-        spiritAssignments
+        room.spiritSelections
       )
       setSIGameState(room.code, siGameState)
       io.to(room.code).emit('si_game_state', siGameState)

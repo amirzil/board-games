@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import socket from '../../socket'
 import { useGameStore } from '../../store/gameStore'
@@ -6,7 +6,7 @@ import { useSITutorialStore } from '../../store/siTutorialStore'
 import Button from '../UI/Button'
 import styles from './SILobbyScreen.module.css'
 
-const SPIRITS = [
+export const SPIRITS = [
   { id: 'lightning', name: "Lightning's Swift Strike", tagline: 'Destroy invaders with speed and overwhelming force', color: '#f0c040' },
   { id: 'river',     name: 'River Surges in Sunlight',  tagline: 'Nurture the land and sweep invaders away',       color: '#4a9fd4' },
 ]
@@ -21,7 +21,27 @@ export default function SILobbyScreen({ onBack }: Props) {
   const [name, setName] = useState('')
   const [joinCode, setJoinCode] = useState('')
   const [mode, setMode] = useState<'choose' | 'create' | 'join'>('choose')
+
+  // Local selection — kept in sync with server via si_select_spirit
   const [selectedSpirit, setSelectedSpirit] = useState<string>(SPIRITS[0].id)
+
+  // When we join a room, emit our initial selection
+  useEffect(() => {
+    if (room && playerId) {
+      const existing = room.spiritSelections?.[playerId]
+      if (!existing) {
+        socket.emit('si_select_spirit', selectedSpirit)
+      } else {
+        setSelectedSpirit(existing)
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!room])
+
+  const handleSpiritSelect = (spiritId: string) => {
+    setSelectedSpirit(spiritId)
+    socket.emit('si_select_spirit', spiritId)
+  }
 
   const handleCreate = () => {
     if (!name.trim()) return
@@ -34,23 +54,15 @@ export default function SILobbyScreen({ onBack }: Props) {
   }
 
   const handleStart = () => {
-    if (!room || !playerId) return
-    const assignments: Record<string, string> = {}
-
-    // Assign spirits: host picks their spirit; guest gets the other
-    const hostPlayer = room.players.find((p) => p.id === room.hostId)
-    const guestPlayers = room.players.filter((p) => p.id !== room.hostId)
-    if (hostPlayer) assignments[hostPlayer.id] = selectedSpirit
-    const otherSpirit = SPIRITS.find((s) => s.id !== selectedSpirit)?.id ?? SPIRITS[0].id
-    for (const g of guestPlayers) {
-      assignments[g.id] = otherSpirit
-    }
-
-    socket.emit('si_start_game', assignments)
+    socket.emit('si_start_game')
   }
 
   const isHost = room?.hostId === playerId
-  const canStart = (room?.players.length ?? 0) >= 1
+  const selections = room?.spiritSelections ?? {}
+  const selectedSpirits = Object.values(selections)
+  const hasConflict = selectedSpirits.length !== new Set(selectedSpirits).size
+  const allSelected = room ? room.players.every((p) => selections[p.id]) : false
+  const canStart = allSelected && !hasConflict
 
   // If in a room, show waiting room / start screen
   if (room) {
@@ -71,40 +83,54 @@ export default function SILobbyScreen({ onBack }: Props) {
           </div>
 
           <div className={styles.playerList}>
-            {room.players.map((p, i) => (
-              <motion.div
-                key={p.id}
-                className={`${styles.playerRow} ${p.id === playerId ? styles.you : ''}`}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-              >
-                <span className={styles.playerDot} />
-                <span className={styles.playerName}>{p.name}</span>
-                {p.id === room.hostId && <span className={styles.hostBadge}>Host</span>}
-                {p.id === playerId && <span className={styles.youBadge}>You</span>}
-              </motion.div>
-            ))}
+            {room.players.map((p, i) => {
+              const spirit = SPIRITS.find((s) => s.id === selections[p.id])
+              return (
+                <motion.div
+                  key={p.id}
+                  className={`${styles.playerRow} ${p.id === playerId ? styles.you : ''}`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                >
+                  <span className={styles.playerDot} />
+                  <span className={styles.playerName}>{p.name}</span>
+                  {p.id === room.hostId && <span className={styles.hostBadge}>Host</span>}
+                  {p.id === playerId && <span className={styles.youBadge}>You</span>}
+                  {spirit && (
+                    <span className={styles.spiritBadge} style={{ color: spirit.color }}>
+                      {spirit.name}
+                    </span>
+                  )}
+                </motion.div>
+              )
+            })}
           </div>
 
-          {isHost && (
-            <div className={styles.spiritSelect}>
-              <p className={styles.spiritLabel}>Your Spirit</p>
-              <div className={styles.spiritGrid}>
-                {SPIRITS.map((s) => (
+          <div className={styles.spiritSelect}>
+            <p className={styles.spiritLabel}>Choose Your Spirit</p>
+            <div className={styles.spiritGrid}>
+              {SPIRITS.map((s) => {
+                const takenBy = room.players.find(
+                  (p) => p.id !== playerId && selections[p.id] === s.id
+                )
+                return (
                   <button
                     key={s.id}
-                    className={`${styles.spiritCard} ${selectedSpirit === s.id ? styles.spiritSelected : ''}`}
+                    className={`${styles.spiritCard} ${selectedSpirit === s.id ? styles.spiritSelected : ''} ${takenBy ? styles.spiritTaken : ''}`}
                     style={{ '--spirit-color': s.color } as React.CSSProperties}
-                    onClick={() => setSelectedSpirit(s.id)}
+                    onClick={() => handleSpiritSelect(s.id)}
+                    disabled={!!takenBy}
                   >
                     <span className={styles.spiritName}>{s.name}</span>
-                    <span className={styles.spiritTagline}>{s.tagline}</span>
+                    <span className={styles.spiritTagline}>
+                      {takenBy ? `Taken by ${takenBy.name}` : s.tagline}
+                    </span>
                   </button>
-                ))}
-              </div>
+                )
+              })}
             </div>
-          )}
+          </div>
 
           {isHost ? (
             <Button size="lg" onClick={handleStart} disabled={!canStart}>
@@ -112,6 +138,9 @@ export default function SILobbyScreen({ onBack }: Props) {
             </Button>
           ) : (
             <p className={styles.waitingText}>Waiting for host to start...</p>
+          )}
+          {hasConflict && (
+            <p className={styles.conflictText}>Two players have chosen the same spirit</p>
           )}
         </motion.div>
       </div>

@@ -15,6 +15,7 @@ export interface Room {
   gameType: GameType
   gameState: GameState | null
   siGameState: SIGameState | null
+  spiritSelections: Record<string, string> // playerId → spiritId
 }
 
 const rooms = new Map<string, Room>()
@@ -39,6 +40,7 @@ export function createRoom(hostId: string, hostName: string, socketId: string): 
     gameType: 'splendor',
     gameState: null,
     siGameState: null,
+    spiritSelections: {},
   }
   rooms.set(code, room)
   return room
@@ -104,4 +106,9 @@ export function setSIGameState(code: string, state: SIGameState): void {
 export function setGameType(code: string, gameType: GameType): void {
   const room = rooms.get(code)
   if (room) room.gameType = gameType
+}
+
+export function setSpiritSelection(code: string, playerId: string, spiritId: string): void {
+  const room = rooms.get(code)
+  if (room) room.spiritSelections[playerId] = spiritId
 }

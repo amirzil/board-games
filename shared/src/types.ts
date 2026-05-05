@@ -55,6 +55,7 @@ export interface RoomInfo {
   code: string
   hostId: string
   players: { id: string; name: string }[]
+  spiritSelections?: Record<string, string> // playerId → spiritId
 }
 
 // Actions

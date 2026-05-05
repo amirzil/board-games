@@ -107,7 +107,8 @@ export type SIAction = SIGrowAction | SIPlayCardAction | SIConfirmAction
 
 // Socket event extensions
 export interface SIClientToServerEvents {
-  si_start_game: (spiritAssignments: Record<string, string>) => void
+  si_start_game: () => void
+  si_select_spirit: (spiritId: string) => void
   si_action: (action: SIAction) => void
 }
 
