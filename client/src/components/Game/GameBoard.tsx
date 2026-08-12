@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import type { NonGoldColor, Player } from '@splendor/shared'
 import { useGameStore } from '../../store/gameStore'
 import { useTutorialStore, TUTORIAL_PLAYER_ID, TUTORIAL_STEPS } from '../../store/tutorialStore'
@@ -8,6 +8,8 @@ import NobleCard from './NobleCard'
 import GemBank from './GemBank'
 import PlayerPanel from './PlayerPanel'
 import TutorialOverlay from '../Tutorial/TutorialOverlay'
+import { playSound, isMuted, toggleMute } from '../../audio/soundEngine'
+import { useGameSoundEffects } from '../../audio/useGameSoundEffects'
 import styles from './GameBoard.module.css'
 
 function cardProduction(player: Pick<Player, 'cards'>): Partial<Record<NonGoldColor, number>> {
@@ -41,6 +43,11 @@ export default function GameBoard() {
 
   const myProduction = localPlayer ? cardProduction(localPlayer) : {}
   const board = gameState?.board
+
+  const [muted, setMuted] = useState(isMuted())
+  useGameSoundEffects(gameState, playerId)
+
+  const handleToggleMute = () => setMuted(toggleMute())
 
   const canBuyCard = useCallback(
     (cardId: string): boolean => {
@@ -114,6 +121,7 @@ export default function GameBoard() {
   }
 
   const handleTakeGem = (color: NonGoldColor) => {
+    playSound('chipSelect')
     if (isTutorial) {
       tutorialStore.addPendingGem(color)
     } else {
@@ -131,6 +139,7 @@ export default function GameBoard() {
   }
 
   const handleCancelTake = () => {
+    playSound('chipDeselect')
     if (isTutorial) {
       tutorialStore.clearPendingGems()
     } else {
@@ -164,6 +173,15 @@ export default function GameBoard() {
           <span className={styles.lastRound}>Final Round!</span>
         )}
         <span className={styles.roundBadge}>Round {gameState.round}</span>
+        <button
+          type="button"
+          className={styles.muteBtn}
+          onClick={handleToggleMute}
+          aria-label={muted ? 'Unmute sound' : 'Mute sound'}
+          title={muted ? 'Unmute sound' : 'Mute sound'}
+        >
+          {muted ? '🔇' : '🔊'}
+        </button>
       </div>
 
       {/* Main area */}

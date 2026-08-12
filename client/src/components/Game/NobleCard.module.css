@@ -25,12 +25,6 @@
   justify-content: center;
 }
 
-.crown {
-  font-size: 2rem;
-  color: var(--accent-gold);
-  text-shadow: 0 0 10px rgba(201, 168, 76, 0.6);
-}
-
 .points {
   position: absolute;
   top: 5px;

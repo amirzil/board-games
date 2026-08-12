@@ -1,4 +1,5 @@
 import type { Noble, NonGoldColor } from '@splendor/shared'
+import NobleMedallion from './NobleMedallion'
 import styles from './NobleCard.module.css'
 
 interface NobleCardProps {
@@ -12,7 +13,7 @@ export default function NobleCard({ noble, isAttainable }: NobleCardProps) {
   return (
     <div className={`${styles.card} ${isAttainable ? styles.attainable : ''}`}>
       <div className={styles.portrait}>
-        <div className={styles.crown}>♛</div>
+        <NobleMedallion />
       </div>
       <div className={styles.points}>{noble.points}</div>
       <div className={styles.requirements}>

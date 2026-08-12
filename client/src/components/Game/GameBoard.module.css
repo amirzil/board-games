@@ -54,6 +54,20 @@
   text-transform: uppercase;
 }
 
+.muteBtn {
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.muteBtn:hover { background: rgba(201, 168, 76, 0.15); }
+.muteBtn:active { transform: scale(0.92); }
+
 .mainArea {
   display: flex;
   gap: 12px;

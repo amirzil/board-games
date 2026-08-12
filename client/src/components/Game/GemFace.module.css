@@ -1,0 +1,78 @@
+.face {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.facetTable,
+.facet_light,
+.facet_mid,
+.facet_dark {
+  stroke: rgba(0, 0, 0, 0.18);
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+}
+
+.girdle {
+  fill: none;
+  stroke-width: 2.5;
+}
+
+.specular {
+  fill: rgba(255, 255, 255, 0.6);
+  filter: blur(1.6px);
+  pointer-events: none;
+}
+
+.plainShadow {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Diamond / white */
+.white .facetTable { fill: #ffffff; }
+.white .facet_light { fill: #f0f0f0; }
+.white .facet_mid { fill: #cfcfcf; }
+.white .facet_dark { fill: #a0a0a0; }
+.white .girdle { stroke: #888888; }
+.white.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.55)); }
+
+/* Sapphire / blue */
+.blue .facetTable { fill: #cfe8ff; }
+.blue .facet_light { fill: #7ab8ff; }
+.blue .facet_mid { fill: #2a5bbf; }
+.blue .facet_dark { fill: #1a3a8f; }
+.blue .girdle { stroke: #142a66; }
+.blue.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px var(--gem-blue-glow)); }
+
+/* Emerald / green */
+.green .facetTable { fill: #cdf5dd; }
+.green .facet_light { fill: #5ddb8c; }
+.green .facet_mid { fill: #1a8040; }
+.green .facet_dark { fill: #0f5a2a; }
+.green .girdle { stroke: #0a3d1c; }
+.green.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px var(--gem-green-glow)); }
+
+/* Ruby / red */
+.red .facetTable { fill: #ffd9d2; }
+.red .facet_light { fill: #ff6b5b; }
+.red .facet_mid { fill: #c0201a; }
+.red .facet_dark { fill: #8b0f0a; }
+.red .girdle { stroke: #5c0906; }
+.red.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px var(--gem-red-glow)); }
+
+/* Onyx / black */
+.black .facetTable { fill: #9a9a9a; }
+.black .facet_light { fill: #707070; }
+.black .facet_mid { fill: #282828; }
+.black .facet_dark { fill: #111111; }
+.black .girdle { stroke: #000000; }
+.black.glow { filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 5px var(--gem-black-glow)); }
+
+/* Gold */
+.gold .facetTable { fill: #fff3c4; }
+.gold .facet_light { fill: #ffe880; }
+.gold .facet_mid { fill: #d4a010; }
+.gold .facet_dark { fill: #a07800; }
+.gold .girdle { stroke: #6e5200; }
+.gold.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 7px var(--gem-gold-glow)); }
