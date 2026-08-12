@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion'
 import type { Card, NonGoldColor, Player } from '@splendor/shared'
+import GemFace from './GemFace'
 import styles from './DevelopmentCard.module.css'
 
 interface DevelopmentCardProps {
@@ -12,14 +13,6 @@ interface DevelopmentCardProps {
   onReserve: () => void
   playerProduction?: Partial<Record<NonGoldColor, number>>
   currentPlayer?: Player
-}
-
-const GEM_SYMBOL: Record<NonGoldColor, string> = {
-  white: '◇',
-  blue: '◆',
-  green: '◈',
-  red: '♦',
-  black: '◉',
 }
 
 export default function DevelopmentCard({
@@ -34,16 +27,36 @@ export default function DevelopmentCard({
 }: DevelopmentCardProps) {
   const [hovered, setHovered] = useState(false)
 
+  const mouseX = useMotionValue(0.5)
+  const mouseY = useMotionValue(0.5)
+  const rotateX = useTransform(mouseY, [0, 1], [7, -7])
+  const rotateY = useTransform(mouseX, [0, 1], [-7, 7])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    mouseX.set((e.clientX - rect.left) / rect.width)
+    mouseY.set((e.clientY - rect.top) / rect.height)
+  }
+  const handleMouseLeave = () => {
+    mouseX.set(0.5)
+    mouseY.set(0.5)
+    setHovered(false)
+  }
+
   const costEntries = Object.entries(card.cost).filter(([, v]) => (v ?? 0) > 0) as [NonGoldColor, number][]
 
   return (
     <motion.div
       className={`${styles.card} ${styles[`tier${card.tier}`]} ${styles[card.color]}`}
       onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      whileHover={{ y: -4, scale: 1.02 }}
+      onHoverEnd={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      style={{ rotateX, rotateY, transformPerspective: 800 }}
+      whileHover={{ y: -6, scale: 1.03 }}
       layout
     >
+      <div className={styles.grain} />
+
       {/* Color stripe at top */}
       <div className={`${styles.stripe} ${styles[`stripe_${card.color}`]}`} />
 
@@ -52,7 +65,7 @@ export default function DevelopmentCard({
         {card.points > 0 && (
           <span className={styles.points}>{card.points}</span>
         )}
-        <div className={`${styles.gemProduced} ${styles[`gem_${card.color}`]}`} />
+        <GemFace color={card.color} glow={false} className={styles.gemIcon} />
       </div>
 
       {/* Cost */}

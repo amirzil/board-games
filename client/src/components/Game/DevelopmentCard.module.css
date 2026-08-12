@@ -11,17 +11,45 @@
   flex-direction: column;
   cursor: pointer;
   flex-shrink: 0;
+  transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-card-hover); }
+
+.grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
 }
 
 /* Tier borders */
 .tier1 { border-color: rgba(160, 82, 45, 0.5); }
 .tier2 { border-color: rgba(168, 170, 176, 0.5); }
 .tier3 { border-color: rgba(201, 168, 76, 0.6); box-shadow: 0 4px 16px rgba(201, 168, 76, 0.2), var(--shadow-card); }
+.tier3:hover { box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3), var(--shadow-card-hover); }
 
-/* Stripe colors */
+/* Stripe colors — a slow foil sheen sweeps across the gilt edge */
 .stripe {
+  position: relative;
   height: 8px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+.stripe::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.55) 48%, transparent 66%);
+  background-size: 220% 100%;
+  animation: sheen 4.5s ease-in-out infinite;
+}
+@keyframes sheen {
+  0% { background-position: 120% 0; }
+  50%, 100% { background-position: -60% 0; }
 }
 .stripe_white  { background: linear-gradient(90deg, #ddd, #fff); }
 .stripe_blue   { background: linear-gradient(90deg, #2a5bbf, #5090e0); }
@@ -30,6 +58,8 @@
 .stripe_black  { background: linear-gradient(90deg, #111, #404040); }
 
 .header {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,21 +74,16 @@
   line-height: 1;
 }
 
-.gemProduced {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+.gemIcon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
 }
-
-.gem_white  { background: radial-gradient(circle at 35% 30%, #fff 0%, #ccc 100%); box-shadow: 0 0 6px rgba(255,255,255,0.5); }
-.gem_blue   { background: radial-gradient(circle at 35% 30%, #7ab8ff 0%, #2a5bbf 100%); box-shadow: 0 0 6px rgba(58,123,213,0.5); }
-.gem_green  { background: radial-gradient(circle at 35% 30%, #5ddb8c 0%, #1a8040 100%); box-shadow: 0 0 6px rgba(39,174,96,0.5); }
-.gem_red    { background: radial-gradient(circle at 35% 30%, #ff6b5b 0%, #c0201a 100%); box-shadow: 0 0 6px rgba(192,57,43,0.5); }
-.gem_black  { background: radial-gradient(circle at 35% 30%, #707070 0%, #1a1a1a 100%); box-shadow: 0 0 6px rgba(80,80,80,0.4); }
 
 /* Cost section */
 .cost {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -101,6 +126,7 @@
 /* Tier badge */
 .tierBadge {
   position: absolute;
+  z-index: 1;
   bottom: 5px;
   right: 6px;
   font-family: var(--font-heading);
@@ -114,6 +140,7 @@
 /* Overlay */
 .overlay {
   position: absolute;
+  z-index: 2;
   inset: 0;
   background: rgba(0, 0, 0, 0.72);
   display: flex;

@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    port: 5175,
     proxy: {
       '/socket.io': {
         target: 'http://localhost:3001',

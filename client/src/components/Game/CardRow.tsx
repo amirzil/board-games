@@ -63,10 +63,11 @@ export default function CardRow({
             card ? (
               <motion.div
                 key={card.id}
-                initial={{ opacity: 0, scale: 0.8, y: -20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3, delay: idx * 0.05 }}
+                initial={{ opacity: 0, rotateY: -100, y: -16 }}
+                animate={{ opacity: 1, rotateY: 0, y: 0 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ duration: 0.4, delay: idx * 0.05, ease: 'easeOut' }}
+                style={{ transformPerspective: 700 }}
               >
                 <DevelopmentCard
                   card={card}
