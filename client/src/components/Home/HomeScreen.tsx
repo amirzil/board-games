@@ -4,7 +4,7 @@ import styles from './HomeScreen.module.css'
 
 const GAMES = [
   { id: 'splendor',      name: 'Splendor',      tagline: 'Collect gems, buy cards, attract nobles', players: '2–4', available: true },
-  { id: 'harmonies',     name: 'Harmonies',     tagline: 'Compose beautiful landscapes in harmony', players: '1–5', available: false },
+  { id: 'harmonies',     name: 'Harmonies',     tagline: 'Compose beautiful landscapes in harmony', players: '1–4', available: true },
   { id: 'spirit-island', name: 'Spirit Island', tagline: 'Defend your island as powerful spirits',  players: '1–2', available: true },
 ]
 

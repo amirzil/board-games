@@ -1,0 +1,164 @@
+.board {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 12px;
+  background: var(--bg-table);
+  color: var(--text-light);
+}
+
+.turnBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(20, 10, 4, 0.7);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 8px;
+}
+.turnText { font-family: var(--font-heading); flex: 1; }
+.finalRound { color: var(--gem-red); font-family: var(--font-heading); text-transform: uppercase; font-size: 0.8rem; }
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--text-gold);
+  margin: 8px 0;
+}
+
+.mainArea {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.center { flex: 1; min-width: 280px; }
+
+.spaces { display: flex; gap: 10px; flex-wrap: wrap; }
+.space {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.spaceTokens { display: flex; gap: 4px; }
+
+.token {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: default;
+  padding: 0;
+}
+.tokenSelected { outline: 3px solid var(--accent-gold); }
+
+.green { background: #2e7d4f; }
+.grey { background: #8b8f94; }
+.blue { background: #2f6fb0; }
+.yellow { background: #d8c24a; }
+.red { background: #c0392b; }
+.brown { background: #8a5a34; }
+
+.draftBtn, .smallBtn, .endTurnBtn {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  background: rgba(201, 168, 76, 0.15);
+  color: var(--text-gold);
+  cursor: pointer;
+}
+.draftBtn:disabled, .smallBtn:disabled, .endTurnBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.pending {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px dashed rgba(201, 168, 76, 0.4);
+  border-radius: 8px;
+}
+.pendingLabel { font-family: var(--font-heading); font-size: 0.75rem; }
+
+.animalRow { display: flex; gap: 8px; flex-wrap: wrap; }
+.animalCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  width: 120px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.animalName { font-family: var(--font-heading); font-size: 0.85rem; }
+.animalTrack { font-size: 0.7rem; color: rgba(245, 234, 208, 0.6); }
+
+.endTurnBtn { margin-top: 12px; padding: 8px 20px; font-size: 0.8rem; }
+
+.myBoardArea { flex: 1.4; min-width: 360px; }
+.hexGrid {
+  position: relative;
+  height: 340px;
+  margin: 0 auto;
+}
+.hex {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hex:disabled { cursor: default; }
+.hexMatch { outline: 3px solid var(--accent-gold); }
+.hexHeight {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+.hoverInfo { text-align: center; font-size: 0.75rem; color: rgba(245, 234, 208, 0.5); }
+
+.myCards { margin-top: 16px; }
+.myCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+.matches { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+
+.others { width: 220px; display: flex; flex-direction: column; gap: 8px; }
+.otherPlayer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+}
+.activePlayer { border-color: var(--accent-gold); }

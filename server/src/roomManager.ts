@@ -1,4 +1,4 @@
-import type { GameState, SIGameState } from '@splendor/shared'
+import type { GameState, SIGameState, HGameState } from '@splendor/shared'
 
 export interface RoomPlayer {
   id: string
@@ -6,7 +6,7 @@ export interface RoomPlayer {
   socketId: string
 }
 
-export type GameType = 'splendor' | 'spirit-island'
+export type GameType = 'splendor' | 'spirit-island' | 'harmonies'
 
 export interface Room {
   code: string
@@ -15,6 +15,7 @@ export interface Room {
   gameType: GameType
   gameState: GameState | null
   siGameState: SIGameState | null
+  hGameState: HGameState | null
   spiritSelections: Record<string, string> // playerId → spiritId
 }
 
@@ -40,6 +41,7 @@ export function createRoom(hostId: string, hostName: string, socketId: string): 
     gameType: 'splendor',
     gameState: null,
     siGameState: null,
+    hGameState: null,
     spiritSelections: {},
   }
   rooms.set(code, room)
@@ -101,6 +103,11 @@ export function setGameState(code: string, state: GameState): void {
 export function setSIGameState(code: string, state: SIGameState): void {
   const room = rooms.get(code)
   if (room) room.siGameState = state
+}
+
+export function setHGameState(code: string, state: HGameState): void {
+  const room = rooms.get(code)
+  if (room) room.hGameState = state
 }
 
 export function setGameType(code: string, gameType: GameType): void {

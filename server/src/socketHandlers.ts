@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
-import type { ServerToClientEvents, ClientToServerEvents, GameAction, SIAction } from '@splendor/shared'
-import { initGame, applyAction, initSIGame, applySIAction } from '@splendor/shared'
+import type { ServerToClientEvents, ClientToServerEvents, GameAction, SIAction, HAction } from '@splendor/shared'
+import { initGame, applyAction, initSIGame, applySIAction, initHarmoniesGame, applyHAction } from '@splendor/shared'
 import {
   createRoom,
   getRoom,
@@ -9,6 +9,7 @@ import {
   removePlayer,
   setGameState,
   setSIGameState,
+  setHGameState,
   setGameType,
   setSpiritSelection,
   getRoomByPlayerId,
@@ -18,9 +19,12 @@ type AllClientEvents = ClientToServerEvents & {
   si_start_game: () => void
   si_select_spirit: (spiritId: string) => void
   si_action: (action: SIAction) => void
+  h_start_game: () => void
+  h_action: (action: HAction) => void
 }
 type AllServerEvents = ServerToClientEvents & {
   si_game_state: (state: ReturnType<typeof initSIGame>) => void
+  h_game_state: (state: ReturnType<typeof initHarmoniesGame>) => void
 }
 
 type IoServer = Server<AllClientEvents, AllServerEvents>
@@ -133,6 +137,35 @@ export function registerHandlers(io: IoServer, socket: IoSocket) {
       const newState = applySIAction(room.siGameState, playerId, action)
       setSIGameState(room.code, newState)
       io.to(room.code).emit('si_game_state', newState)
+    } catch (err: unknown) {
+      socket.emit('error', (err as Error).message)
+    }
+  })
+
+  socket.on('h_start_game', () => {
+    try {
+      const room = getRoomByPlayerId(playerId)
+      if (!room) throw new Error('Not in a room')
+      if (room.hostId !== playerId) throw new Error('Only the host can start the game')
+      if (room.players.length < 1) throw new Error('Need at least 1 player')
+
+      setGameType(room.code, 'harmonies')
+      const hGameState = initHarmoniesGame(room.players.map((p) => ({ id: p.id, name: p.name })))
+      setHGameState(room.code, hGameState)
+      io.to(room.code).emit('h_game_state', hGameState)
+    } catch (err: unknown) {
+      socket.emit('error', (err as Error).message)
+    }
+  })
+
+  socket.on('h_action', (action: HAction) => {
+    try {
+      const room = getRoomByPlayerId(playerId)
+      if (!room || !room.hGameState) throw new Error('No active Harmonies game')
+
+      const newState = applyHAction(room.hGameState, playerId, action)
+      setHGameState(room.code, newState)
+      io.to(room.code).emit('h_game_state', newState)
     } catch (err: unknown) {
       socket.emit('error', (err as Error).message)
     }
