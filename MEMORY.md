@@ -35,3 +35,38 @@ noise synthesis can provide, that's the trigger to revisit the "Full
 Production" option this decision deferred.
 
 Branch: `splendor-tactile-refresh`, PR #1.
+
+## 2026-08-13 — Card layout matched to the real game; art stays original
+
+**Decided:** Rebuild `DevelopmentCard` and add a real `CardBack` so cards
+match the real Splendor card *structure* — full-bleed illustration with
+points/gem-icon overlaid and cost chips stacked bottom-left (front), and a
+tier-colored back with an emblem + dot count for deck piles (previously
+just a bordered count box) — using original vintage-engraving-style
+vignettes (`CardArt`): duotone silhouette scenes keyed to tier (bust
+portraits / trade scenes / grand architecture) and tinted per gem color,
+variant chosen deterministically from the card's id.
+
+**Why:** The user compared the app directly against a photo of the real
+physical cards and it read as schematic. The layout/composition (picture
+area + corner stats + stacked cost chips; tier-coded back with dots) is a
+generic trading-card convention, not protectable expression, so it can be
+matched exactly. The specific photographed portraits/scenes on the real
+cards can't be — original art was required there.
+
+**Rejected** (see the 3-option menu offered to the user):
+- *Trade-good motif icons* (flat woodcut-style resource icons instead of
+  people/scenes) — sidesteps portraiture entirely but reads less like the
+  reference photo's "old print" feel.
+- *Abstract atmosphere only* (gradient/grain wash, no figures) — fastest,
+  zero resemblance risk, but too far from "looks like the real cards."
+- User picked vintage engraving vignettes as the closest match to the
+  reference while staying original.
+
+**How to apply:** New tier/category or color added to the game → extend
+`CardArt`'s `PALETTE`/`SCENES` tables rather than starting a new art
+system. If two variants per category starts feeling repetitive across a
+full 40-card tier, that's the point to add a third variant rather than
+switch approaches.
+
+Branch: `splendor-card-art`.

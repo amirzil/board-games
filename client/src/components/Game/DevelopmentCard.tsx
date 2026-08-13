@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion'
 import type { Card, NonGoldColor, Player } from '@splendor/shared'
 import GemFace from './GemFace'
+import GemToken from './GemToken'
+import CardArt from './CardArt'
 import styles from './DevelopmentCard.module.css'
 
 interface DevelopmentCardProps {
@@ -47,7 +49,7 @@ export default function DevelopmentCard({
 
   return (
     <motion.div
-      className={`${styles.card} ${styles[`tier${card.tier}`]} ${styles[card.color]}`}
+      className={`${styles.card} ${styles[`tier${card.tier}`]}`}
       onHoverStart={() => setHovered(true)}
       onHoverEnd={handleMouseLeave}
       onMouseMove={handleMouseMove}
@@ -57,28 +59,35 @@ export default function DevelopmentCard({
     >
       <div className={styles.grain} />
 
-      {/* Color stripe at top */}
-      <div className={`${styles.stripe} ${styles[`stripe_${card.color}`]}`} />
-
-      {/* Points */}
-      <div className={styles.header}>
-        {card.points > 0 && (
-          <span className={styles.points}>{card.points}</span>
-        )}
-        <GemFace color={card.color} glow={false} className={styles.gemIcon} />
+      {/* Illustration */}
+      <div className={styles.artWrap}>
+        <CardArt cardId={card.id} tier={card.tier} color={card.color} />
+        <div className={styles.hatch} />
+        <div className={styles.vignette} />
+        <div className={styles.artHeader}>
+          {card.points > 0 && <span className={styles.points}>{card.points}</span>}
+          <GemFace color={card.color} glow={false} className={styles.gemIcon} />
+        </div>
       </div>
 
-      {/* Cost */}
-      <div className={styles.cost}>
-        {costEntries.map(([color, amount]) => {
+      {/* Card stock beneath the picture */}
+      <div className={styles.lower} />
+
+      {/* Cost, stacked bottom-left — climbs upward so it never runs off the card */}
+      <div className={styles.costStack}>
+        {costEntries.map(([color, amount], i) => {
           const discount = playerProduction[color] ?? 0
           const remaining = Math.max(0, amount - discount)
           const affordable = currentPlayer
             ? (currentPlayer.gems[color] + (currentPlayer.gems.gold ?? 0)) >= remaining
             : true
           return (
-            <div key={color} className={`${styles.costItem} ${styles[`cost_${color}`]} ${!affordable && remaining > 0 ? styles.cantAfford : ''}`}>
-              <span className={styles.costAmount}>{amount}</span>
+            <div
+              key={color}
+              className={`${styles.costChip} ${!affordable && remaining > 0 ? styles.cantAfford : ''}`}
+              style={{ bottom: i * 20, zIndex: costEntries.length - i }}
+            >
+              <GemToken color={color} count={amount} size="sm" />
               {discount > 0 && remaining < amount && (
                 <span className={styles.discount}>-{discount}</span>
               )}
@@ -86,9 +95,6 @@ export default function DevelopmentCard({
           )
         })}
       </div>
-
-      {/* Tier indicator */}
-      <div className={styles.tierBadge}>{'I'.repeat(card.tier)}</div>
 
       {/* Action overlay */}
       <AnimatePresence>

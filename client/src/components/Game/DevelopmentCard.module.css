@@ -18,129 +18,123 @@
 .grain {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  opacity: 0.06;
+  z-index: 3;
+  opacity: 0.05;
   mix-blend-mode: overlay;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 120px 120px;
 }
 
-/* Tier borders */
+/* Tier frame colors */
 .tier1 { border-color: rgba(160, 82, 45, 0.5); }
 .tier2 { border-color: rgba(168, 170, 176, 0.5); }
 .tier3 { border-color: rgba(201, 168, 76, 0.6); box-shadow: 0 4px 16px rgba(201, 168, 76, 0.2), var(--shadow-card); }
 .tier3:hover { box-shadow: 0 4px 20px rgba(201, 168, 76, 0.3), var(--shadow-card-hover); }
 
-/* Stripe colors — a slow foil sheen sweeps across the gilt edge */
-.stripe {
+/* Illustration */
+.artWrap {
   position: relative;
-  height: 8px;
+  height: 62%;
   flex-shrink: 0;
   overflow: hidden;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
 }
-.stripe::after {
-  content: '';
+
+.hatch {
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.55) 48%, transparent 66%);
-  background-size: 220% 100%;
-  animation: sheen 4.5s ease-in-out infinite;
-}
-@keyframes sheen {
-  0% { background-position: 120% 0; }
-  50%, 100% { background-position: -60% 0; }
-}
-.stripe_white  { background: linear-gradient(90deg, #ddd, #fff); }
-.stripe_blue   { background: linear-gradient(90deg, #2a5bbf, #5090e0); }
-.stripe_green  { background: linear-gradient(90deg, #1a8040, #40b870); }
-.stripe_red    { background: linear-gradient(90deg, #c0201a, #e05050); }
-.stripe_black  { background: linear-gradient(90deg, #111, #404040); }
-
-.header {
-  position: relative;
   z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.14;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.7) 0px,
+    rgba(0, 0, 0, 0.7) 0.6px,
+    transparent 0.6px,
+    transparent 3.5px
+  );
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 42%, transparent 55%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+.artHeader {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 8px 4px;
+  padding: 5px 6px;
 }
 
 .points {
   font-family: var(--font-heading);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #fff8e4;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.9), 0 1px 2px rgba(0, 0, 0, 0.9);
   line-height: 1;
 }
 
 .gemIcon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 }
 
-/* Cost section */
-.cost {
+/* Card stock below the picture */
+.lower {
+  flex: 1;
   position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 4px 8px;
-  margin-top: auto;
 }
 
-.costItem {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  min-width: 28px;
+/* Cost, stacked over the art/stock seam like a handful of chips */
+.costStack {
+  position: absolute;
+  z-index: 2;
+  left: 6px;
+  bottom: 6px;
+  width: 32px;
+  height: 0;
 }
 
-.costAmount {
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  min-width: 12px;
+.costChip {
+  position: absolute;
+  left: 0;
+}
+
+.cantAfford > :global(button) {
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(255, 90, 70, 0.85);
 }
 
 .discount {
-  font-size: 0.65rem;
-  color: rgba(100, 220, 100, 0.9);
-  font-style: italic;
-}
-
-.cantAfford .costAmount { color: rgba(255, 120, 100, 0.9); }
-
-.cost_white { background: rgba(180, 180, 180, 0.7); }
-.cost_blue  { background: rgba(42, 91, 191, 0.85); }
-.cost_green { background: rgba(26, 128, 64, 0.85); }
-.cost_red   { background: rgba(192, 32, 26, 0.85); }
-.cost_black { background: rgba(20, 20, 20, 0.9); }
-
-/* Tier badge */
-.tierBadge {
   position: absolute;
-  z-index: 1;
-  bottom: 5px;
-  right: 6px;
-  font-family: var(--font-heading);
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
-  color: rgba(0, 0, 0, 0.25);
+  top: -3px;
+  right: -5px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #eafff0;
+  background: rgba(20, 90, 40, 0.9);
+  border-radius: 6px;
+  padding: 0 3px;
+  line-height: 1.3;
 }
-.tier2 .tierBadge { color: rgba(120, 120, 120, 0.4); }
-.tier3 .tierBadge { color: rgba(201, 168, 76, 0.5); }
 
-/* Overlay */
+/* Action overlay */
 .overlay {
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   inset: 0;
   background: rgba(0, 0, 0, 0.72);
   display: flex;
