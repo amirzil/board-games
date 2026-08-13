@@ -35,23 +35,39 @@
   position: absolute;
   z-index: 2;
   font-family: var(--font-heading);
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  font-weight: 800;
+  color: #fff;
+  /* A hard dark outline (not just a soft drop shadow) keeps the number
+     legible over the gem's own bright "table" facet, which is a pale
+     tint even on blue/green/red/black gems. */
+  text-shadow:
+    -1.5px -1.5px 0 rgba(0, 0, 0, 0.85),
+    1.5px -1.5px 0 rgba(0, 0, 0, 0.85),
+    -1.5px 1.5px 0 rgba(0, 0, 0, 0.85),
+    1.5px 1.5px 0 rgba(0, 0, 0, 0.85),
+    0 0 4px rgba(0, 0, 0, 0.55);
   line-height: 1;
   user-select: none;
   pointer-events: none;
 }
 
-.white .count { color: #333; text-shadow: none; }
+.white .count,
+.gold .count {
+  text-shadow:
+    -1.5px -1.5px 0 rgba(255, 255, 255, 0.8),
+    1.5px -1.5px 0 rgba(255, 255, 255, 0.8),
+    -1.5px 1.5px 0 rgba(255, 255, 255, 0.8),
+    1.5px 1.5px 0 rgba(255, 255, 255, 0.8);
+}
+.white .count { color: #2e2a22; }
 .gold .count { color: #3a2a00; }
 
 /* Sizes */
-.sm { width: 32px; height: 32px; }
-.sm .count { font-size: 0.7rem; }
+.sm { width: 34px; height: 34px; }
+.sm .count { font-size: 0.88rem; }
 
-.md { width: 52px; height: 52px; }
-.md .count { font-size: 1rem; }
+.md { width: 54px; height: 54px; }
+.md .count { font-size: 1.12rem; }
 
-.lg { width: 64px; height: 64px; }
-.lg .count { font-size: 1.2rem; }
+.lg { width: 66px; height: 66px; }
+.lg .count { font-size: 1.3rem; }

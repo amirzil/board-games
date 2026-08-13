@@ -85,7 +85,7 @@ export default function DevelopmentCard({
             <div
               key={color}
               className={`${styles.costChip} ${!affordable && remaining > 0 ? styles.cantAfford : ''}`}
-              style={{ bottom: i * 20, zIndex: costEntries.length - i }}
+              style={{ bottom: i * 26, zIndex: costEntries.length - i }}
             >
               <GemToken color={color} count={amount} size="sm" />
               {discount > 0 && remaining < amount && (
