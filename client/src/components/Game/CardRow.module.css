@@ -5,53 +5,57 @@
 }
 
 .deck {
-  width: 80px;
+  position: relative;
+  width: var(--card-width);
   height: var(--card-height);
-  background: linear-gradient(160deg, rgba(30, 18, 8, 0.9) 0%, rgba(15, 8, 2, 0.95) 100%);
-  border: 2px solid;
-  border-radius: var(--border-radius-card);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
   cursor: default;
-  box-shadow: var(--shadow-card);
   flex-shrink: 0;
-  transition: box-shadow 0.2s;
+  transition: filter 0.2s;
 }
 
 .deck:not(.empty) { cursor: pointer; }
-.deck:not(.empty):hover {
-  box-shadow: var(--shadow-card-hover);
-}
 
-.deck.empty {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
+.deck.empty { opacity: 0.3; cursor: not-allowed; }
 
-.deckTier {
-  font-family: var(--font-heading);
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
+.deckLayer1,
+.deckLayer2,
+.deckLayerTop {
+  position: absolute;
+  inset: 0;
 }
+.deckLayer2 { transform: rotate(-6deg) translate(-3px, 1px); }
+.deckLayer1 { transform: rotate(4deg) translate(2px, -1px); }
+.deckLayerTop { transform: none; }
 
 .deckCount {
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  right: 6px;
+  min-width: 20px;
+  padding: 1px 5px;
+  text-align: center;
   font-family: var(--font-heading);
-  font-size: 1.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: rgba(245, 234, 208, 0.8);
-  line-height: 1;
+  color: rgba(245, 234, 208, 0.95);
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 10px;
+  line-height: 1.4;
 }
 
 .deckHint {
+  position: absolute;
+  z-index: 2;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
   font-family: var(--font-heading);
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(245, 234, 208, 0.4);
+  color: rgba(245, 234, 208, 0.85);
 }
 
 .cards {

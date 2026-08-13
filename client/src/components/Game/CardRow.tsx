@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Card, NonGoldColor, Player, TierState } from '@splendor/shared'
 import DevelopmentCard from './DevelopmentCard'
+import CardBack from './CardBack'
 import styles from './CardRow.module.css'
 
 interface CardRowProps {
@@ -16,18 +17,6 @@ interface CardRowProps {
   currentPlayer?: Player
 }
 
-const TIER_LABELS: Record<1 | 2 | 3, string> = {
-  1: 'I',
-  2: 'II',
-  3: 'III',
-}
-
-const TIER_COLORS: Record<1 | 2 | 3, string> = {
-  1: 'var(--tier1-color)',
-  2: 'var(--tier2-color)',
-  3: 'var(--tier3-color)',
-}
-
 export default function CardRow({
   tier,
   tierState,
@@ -40,20 +29,21 @@ export default function CardRow({
   playerProduction,
   currentPlayer,
 }: CardRowProps) {
+  const canClickDeck = isMyTurn && canReserve && tierState.deck.length > 0
+
   return (
     <div className={styles.row}>
-      {/* Deck */}
+      {/* Deck: a stack of face-down cards */}
       <motion.div
         className={`${styles.deck} ${tierState.deck.length === 0 ? styles.empty : ''}`}
-        style={{ borderColor: TIER_COLORS[tier] }}
-        whileHover={isMyTurn && canReserve && tierState.deck.length > 0 ? { scale: 1.04 } : {}}
-        onClick={isMyTurn && canReserve && tierState.deck.length > 0 ? () => onReserveFromDeck(tier) : undefined}
+        whileHover={canClickDeck ? { scale: 1.04, y: -3 } : {}}
+        onClick={canClickDeck ? () => onReserveFromDeck(tier) : undefined}
       >
-        <span className={styles.deckTier} style={{ color: TIER_COLORS[tier] }}>{TIER_LABELS[tier]}</span>
+        {tierState.deck.length > 2 && <CardBack tier={tier} className={styles.deckLayer2} />}
+        {tierState.deck.length > 1 && <CardBack tier={tier} className={styles.deckLayer1} />}
+        <CardBack tier={tier} className={styles.deckLayerTop} />
         <span className={styles.deckCount}>{tierState.deck.length}</span>
-        {tierState.deck.length > 0 && isMyTurn && canReserve && (
-          <span className={styles.deckHint}>Reserve</span>
-        )}
+        {canClickDeck && <span className={styles.deckHint}>Reserve</span>}
       </motion.div>
 
       {/* Visible cards */}
