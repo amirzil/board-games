@@ -1,0 +1,43 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-table);
+  padding: 24px;
+}
+
+.card {
+  background: linear-gradient(160deg, rgba(20, 26, 16, 0.95) 0%, rgba(12, 16, 10, 0.98) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  color: var(--accent-gold);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-light);
+}
+.row.winner { border-color: var(--accent-gold); background: rgba(201, 168, 76, 0.1); }
+.row.you { font-weight: 700; }
+
+.rank { font-family: var(--font-heading); width: 20px; text-align: center; }
+.name { flex: 1; }
+.score { font-family: var(--font-heading); color: var(--accent-gold); }
+.crown { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-gold); }

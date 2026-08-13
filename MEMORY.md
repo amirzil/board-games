@@ -70,3 +70,62 @@ full 40-card tier, that's the point to add a third variant rather than
 switch approaches.
 
 Branch: `splendor-card-art`.
+
+## 2026-08-13 — Harmonies added as a third game, Phase 1 (engine + plain UI)
+
+**Decided:** Build Harmonies following the exact pattern Spirit Island
+established: `shared/src/harmonies/{h-types,h-data,h-engine,index}.ts`
+(pure-function reducer, `applyHAction` — not `applyAction`, which collides
+with Splendor's export from the shared barrel), `gameType: 'harmonies'` +
+`hGameState` on `Room`, parallel `h_start_game`/`h_action` socket events,
+`hGameStore.ts` client store, and `client/src/components/Harmonies/` with
+`HLobbyScreen`/`HBoard`/`HGameOver`. Scoped as Phase 1 of 3 (engine
+correctness with plain CSS; 3D-look board/chips and animal-card art are
+later phases) per the user's explicit choice on how to pace this build.
+
+**Why:** Harmonies didn't exist in the codebase at all — this needed a full
+rules engine from scratch, not a visual pass on existing code. Matching
+the established third-party-game-addition pattern (rather than inventing a
+new one) keeps the codebase consistent and was verified against the actual
+Spirit Island source before starting.
+
+**Rules fidelity — what's confirmed vs. assumed** (cross-checked against
+multiple public rules summaries, not the official rulebook PDF directly,
+since it wasn't accessible):
+- Confirmed with high confidence: central-board drafting (5 spaces × 3
+  tokens), 6 token colors and their stacking rules (blue/yellow
+  single-layer, grey-on-grey mountains height ≤3, green-on-brown trees
+  height ≤3, red-on-{grey,brown,red} buildings height ≤2), scoring
+  formulas for trees/mountains (1/3/7 by height), fields (flat 5/group,
+  ≥2 contiguous), buildings (flat 5, needs ≥3 distinct adjacent colors),
+  end-game triggers (pouch exhausted at refill, or ≤2 empty personal-board
+  spaces) with round-completion wraparound.
+- **Original/invented, not from the real game:** the personal board's
+  hex-grid outline (a radius-2 hexagon, 19 cells — the real board's exact
+  shape wasn't findable), the token pool's exact per-color counts, and the
+  entire Animal Card roster (14 starter cards — names, habitat patterns,
+  and point tracks are all made up; the real game's ~40+ cards and their
+  specific patterns/art aren't available to reproduce).
+- **Flagged as genuinely ambiguous** in `h-types.ts` next to
+  `AnimalCardDef.track`: whether an animal card's score decays with each
+  cube placed (implemented) or stays flat until full completion then
+  drops to 0 (the alternative reading of "score the topmost uncovered
+  slot" — this is the interpretation that would explain why over-matching
+  a card is sometimes described as a trap). Worth verifying against a real
+  rulebook copy if it matters.
+- River scoring's exact low-end per-token rate (first 6 tokens) was also
+  not confirmed; implemented as 1pt/token up to 6, 4pt/token beyond.
+
+**Bug caught during verification, fixed same pass:** `endTurn` originally
+only checked `pendingTokens.length === 0`, which is true both before
+drafting AND after placing all 3 tokens — letting a player pass an entire
+turn with zero actions. Added a `hasDraftedThisTurn` flag, reset per turn.
+Caught by actually playing the game in-browser, not by code review.
+
+**How to apply:** Card content and board shape are cheap to revise later —
+they're plain data in `h-data.ts`, the engine doesn't hardcode assumptions
+about either. If Phase 2/3 visual work reveals the 19-cell board reads too
+small/large in practice, resize `PERSONAL_BOARD_CELLS`' radius there, not
+in the engine.
+
+Branch: `harmonies-engine`.
