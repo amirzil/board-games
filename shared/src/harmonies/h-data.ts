@@ -1,22 +1,5 @@
 import type { AnimalCardDef, HexCoord, TokenColor } from './h-types'
 
-// --- Personal board shape -------------------------------------------------
-// The real game's exact personal-board outline couldn't be verified from
-// available sources, so this is an original radius-2 hex layout (19 cells)
-// rather than a traced replica. The engine only depends on this being *some*
-// list of axial coordinates, so the shape can be reworked freely later (e.g.
-// for Phase 2's visual pass) without touching h-engine.ts.
-export const PERSONAL_BOARD_CELLS: HexCoord[] = (() => {
-  const cells: HexCoord[] = []
-  const N = 2
-  for (let q = -N; q <= N; q++) {
-    const rMin = Math.max(-N, -q - N)
-    const rMax = Math.min(N, -q + N)
-    for (let r = rMin; r <= rMax; r++) cells.push({ q, r })
-  }
-  return cells
-})()
-
 export const AXIAL_DIRECTIONS: HexCoord[] = [
   { q: 1, r: 0 },
   { q: 1, r: -1 },
@@ -25,6 +8,39 @@ export const AXIAL_DIRECTIONS: HexCoord[] = [
   { q: -1, r: 1 },
   { q: 0, r: 1 },
 ]
+
+// --- Personal board shape -------------------------------------------------
+// The real game's exact personal-board outline still couldn't be verified
+// from available sources. This is a revised original layout: a radius-2
+// hexagon core (19 cells) with each of the 6 corners rounded out by a small
+// fan of cells one ring further out, rather than a plain hexagon-of-hexagons
+// (whose corners come to a single-cell point and read as "cut off" compared
+// to the rounder outline of the real board). The engine only depends on
+// this being *some* list of axial coordinates, so the exact shape can be
+// revised again later without touching h-engine.ts.
+export const PERSONAL_BOARD_CELLS: HexCoord[] = (() => {
+  const N = 2
+  const cells = new Map<string, HexCoord>()
+  const add = (c: HexCoord) => cells.set(`${c.q},${c.r}`, c)
+
+  for (let q = -N; q <= N; q++) {
+    const rMin = Math.max(-N, -q - N)
+    const rMax = Math.min(N, -q + N)
+    for (let r = rMin; r <= rMax; r++) add({ q, r })
+  }
+
+  for (let i = 0; i < 6; i++) {
+    const dir = AXIAL_DIRECTIONS[i]
+    const prevDir = AXIAL_DIRECTIONS[(i + 5) % 6]
+    const nextDir = AXIAL_DIRECTIONS[(i + 1) % 6]
+    const corner = { q: dir.q * N, r: dir.r * N }
+    add({ q: corner.q + dir.q, r: corner.r + dir.r })
+    add({ q: corner.q + prevDir.q, r: corner.r + prevDir.r })
+    add({ q: corner.q + nextDir.q, r: corner.r + nextDir.r })
+  }
+
+  return Array.from(cells.values())
+})()
 
 // --- Token pool ------------------------------------------------------------
 // Exact physical token counts also couldn't be verified; this distribution
