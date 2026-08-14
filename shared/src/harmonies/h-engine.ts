@@ -51,7 +51,7 @@ function topOf(stack: HexStack): TokenColor | undefined {
 // height 2 so a following green can still reach a height-3 tree.
 // (Brown-on-grey specifically is a documented interpretation — public rules
 // summaries were ambiguous on this exact interaction.)
-function canPlaceColor(color: TokenColor, stack: HexStack): boolean {
+export function canPlaceColor(color: TokenColor, stack: HexStack): boolean {
   const top = topOf(stack)
   const height = stack.length
   switch (color) {

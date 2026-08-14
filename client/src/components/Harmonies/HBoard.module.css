@@ -122,10 +122,21 @@
 
 .hexTileMatch { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 6px rgba(201, 168, 76, 0.9)); }
 
+/* While a token color is armed, legal hexes invite a click and illegal
+   ones are visibly muted — so a placement never fails as a surprise. */
+.hexTileLegal {
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 7px rgba(120, 220, 140, 0.95));
+}
+.hexTileIllegal {
+  opacity: 0.4;
+  filter: grayscale(0.6);
+}
+
 .pieceWrap {
   position: absolute;
   inset: 0;
 }
+.pieceIllegal { opacity: 0.4; filter: grayscale(0.6); }
 
 .hexHit {
   position: absolute;
