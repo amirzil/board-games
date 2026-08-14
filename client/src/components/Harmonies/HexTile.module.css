@@ -1,0 +1,47 @@
+.tile {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35));
+}
+
+.top {
+  stroke: rgba(0, 0, 0, 0.18);
+  stroke-width: 0.6;
+}
+
+/* Bare ground — dry soil/grass, waiting to be planted */
+.empty .skirt { fill: #5c4f30; }
+.empty .stopLight { stop-color: #d9d0b0; }
+.empty .stopMid { stop-color: #b8ab7c; }
+
+/* Forest green */
+.green .skirt { fill: #163f22; }
+.green .stopLight { stop-color: #7fe39a; }
+.green .stopMid { stop-color: #2f9955; }
+
+/* Stone grey */
+.grey .skirt { fill: #3c4047; }
+.grey .stopLight { stop-color: #d6d9dd; }
+.grey .stopMid { stop-color: #8b909a; }
+
+/* Water blue */
+.blue .skirt { fill: #0f3a52; }
+.blue .stopLight { stop-color: #8fd6f5; }
+.blue .stopMid { stop-color: #2f8fc4; }
+
+/* Wheat field yellow */
+.yellow .skirt { fill: #5c4813; }
+.yellow .stopLight { stop-color: #fce89a; }
+.yellow .stopMid { stop-color: #d4a828; }
+
+/* Clay building red */
+.red .skirt { fill: #4a1a10; }
+.red .stopLight { stop-color: #f2a08d; }
+.red .stopMid { stop-color: #c1442c; }
+
+/* Wood brown */
+.brown .skirt { fill: #3a2a15; }
+.brown .stopLight { stop-color: #d3a877; }
+.brown .stopMid { stop-color: #8a6239; }

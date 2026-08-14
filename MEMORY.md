@@ -151,3 +151,58 @@ Branch: `harmonies-engine`.
 **How to apply:** Any future engine change to Animal Cards must preserve the invariant that `cubedHexes` entries are permanent (never removed) and that `cubesRemainingOnCard` only counts down, never up. If new cards are added to `h-data.ts`, `cubeCellIndex` must point at a habitat cell that's sensible to occupy permanently (avoid making it a cell likely needed for many other cards' overlapping patterns).
 
 Branch: `harmonies-rules-fix`.
+
+## 2026-08-14 — Harmonies Phase 2: 3D-look board and chips
+
+**Decided:** Built the 3D-look visuals per the plan chosen earlier (CSS/SVG
+faux-isometric, no new 3D-rendering dependency). Three new components:
+- `HexToken` — a hex-coin token for loose/central-board/pending display:
+  a darker beveled rim behind a glossy radial-gradient top face. Modeled on
+  Splendor's `GemFace` (same "polished token" technique) but in matte
+  natural tones instead of gem-cut facets, since Harmonies pieces are
+  wood/stone/clay, not jewels.
+- `HexTile` — a flat-top hex rendered as a raised block: SVG top face plus
+  a darker extruded "skirt" along the three front-facing edges, faking a 3D
+  prism without any real 3D transform on the board (hit-testing stays
+  simple — cells are still ordinary flat DOM elements). Cells are painted
+  back-to-front (sorted by y) so each tile's skirt is correctly occluded by
+  whatever sits in front of it.
+- `TokenPiece` — original low-poly, flat-shaded (light-left/dark-right)
+  pieces sitting on top of a `HexTile`: pine-tree cones and rocky mountain
+  peaks that grow taller with stack height, a house-on-a-base for
+  buildings, a glossy flat disc for water, subtle furrow lines for fields,
+  and a wood stump for an uncapped brown filler. A small gold marker
+  overlays pieces that have an Animal cube on them.
+
+**Why:** This is where "the 3D map" payoff actually shows up — Phase 1's
+plain colored squares worked but didn't look like anything. Reusing the
+gem-facet *technique* (not the literal look) for loose tokens keeps visual
+language consistent across games while fitting Harmonies' different
+material (nature pieces vs. jewels). Low-poly flat-shading for the placed
+pieces was chosen over gradient-based shading because it reads clearly at
+small size and composes well with the extruded hex-tile silhouette style.
+
+**Bug found and fixed during this pass (real UX bug, not just testing
+friction):** `handlePlaceToken` cleared the armed color selection
+immediately after emitting the placement action, before knowing whether
+the server would accept it. If a placement was illegal (e.g., stacking a
+second green directly on a green — trees are capped once green is
+placed), the token stayed in hand but the UI looked like nothing was
+selected, silently forcing a re-select on every misclick. Fixed by not
+clearing the selection optimistically — it now only clears via the
+existing reset-on-new-state effect, which only fires after a *successful*
+placement actually broadcasts a new state.
+
+**Tooling note:** `agent-browser screenshot` was intermittently hanging
+mid-session (0% CPU on the browser process during the hang — not a render
+loop, a CDP/daemon issue) badly enough to require killing and restarting
+the daemon a few times. A short `wait` before each screenshot call and
+falling back to `snapshot`-only checks when screenshots misbehave worked
+around it. Not a code issue; noting it in case it recurs.
+
+**How to apply:** All three components take a plain `TokenColor` (or
+`HexStack`) and are stateless/presentational — future phases (e.g. adding
+a 7th terrain type, or re-theming) only need to extend the color tables
+and `TokenPiece`'s per-color branch, not touch `HBoard.tsx`'s game logic.
+
+Branch: `harmonies-3d-visuals`.
