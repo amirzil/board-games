@@ -35,37 +35,41 @@ export interface AnimalCardDef {
   id: string
   name: string
   habitat: HabitatCell[]
-  // Score by cubes-already-placed, e.g. [7,5,3] => 0 cubes scores 7, 1 scores
-  // 5, 2 scores 3, 3+ (fully filled) scores 0. Length also caps how many
-  // times a card can be matched.
-  //
-  // NOTE ON RULES AMBIGUITY: the published rule is "you score the topmost
-  // space that does not have a cube," which is genuinely ambiguous about
-  // whether score decays with each cube placed (this implementation) or
-  // stays flat at track[0] until the card is fully filled and only then
-  // drops to 0 (the other plausible reading, and the one that would match
-  // some players' description of over-completing a card as a "trap"). This
-  // was implemented as progressive decay; worth confirming against an
-  // actual rulebook if the scoring tension feels off in play.
+  // Index into `habitat` marking which cell receives the Animal cube when
+  // the pattern is matched (the real card prints this on one specific
+  // space of the habitat diagram). All cards in this project's roster use
+  // index 0 (the anchor) by convention.
+  cubeCellIndex: number
+  // Printed card values, highest/best first (index 0 = full-completion
+  // reward) down to lowest/first-match reward last, e.g. [7,5,3] for a
+  // 3-cube card: your first successful match scores 3, second scores 5,
+  // fully completing the card scores 7. Zero matches always scores 0 —
+  // per the rule, a card starts with a cube covering every space, and you
+  // score whatever the topmost still-cube-free space shows, which is
+  // nothing until your first match. Length is also the number of cubes
+  // the card starts with (and therefore how many times it can be
+  // matched). Score for `matches` successful habitat completions:
+  // matches === 0 ? 0 : track[track.length - matches].
   track: number[]
-}
-
-export interface ClaimedMatch {
-  q: number
-  r: number
-  rotation: number
 }
 
 export interface PlayerAnimalCard {
   cardId: string
-  cubesPlaced: number
-  claimed: ClaimedMatch[]
+  // Cubes still sitting on the card, not yet moved to the board. Starts at
+  // track.length; hits 0 when the card is fully matched (at which point it
+  // stops counting against the 4-card limit, per the rule that a completed
+  // card is set aside).
+  cubesRemainingOnCard: number
 }
 
 export interface HPlayerState {
   id: string
   name: string
   board: Record<string, HexStack>
+  // Hexes with an Animal cube sitting on them — these can never receive
+  // another token (matching "cannot place a token on a space occupied by
+  // an Animal cube"), and can never receive a second cube either.
+  cubedHexes: string[]
   animalCards: PlayerAnimalCard[]
   finalScore: number | null
 }
@@ -80,6 +84,7 @@ export interface HGameState {
   animalDeck: string[]
   pendingTokens: TokenColor[]
   hasDraftedThisTurn: boolean
+  hasTakenCardThisTurn: boolean
   finalRound: boolean
   finalRoundTriggeredBy: number | null
   winners: string[]

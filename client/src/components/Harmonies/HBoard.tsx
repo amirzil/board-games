@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { TokenColor } from '@splendor/shared'
-import { PERSONAL_BOARD_CELLS, ANIMAL_CARDS, findHabitatMatches, computeScore } from '@splendor/shared'
+import { PERSONAL_BOARD_CELLS, ANIMAL_CARDS, MAX_ANIMAL_CARDS_HELD, findHabitatMatches, computeScore } from '@splendor/shared'
 import { useGameStore } from '../../store/gameStore'
 import { useHGameStore } from '../../store/hGameStore'
 import socket from '../../socket'
@@ -44,7 +44,9 @@ export default function HBoard() {
   const handleEndTurn = () => socket.emit('h_action', { type: 'endTurn' })
 
   const myMatches =
-    isMyTurn && me && selectedCardId ? findHabitatMatches(me.board, selectedCardId, me.animalCards.find((c) => c.cardId === selectedCardId)?.claimed ?? []) : []
+    isMyTurn && me && selectedCardId ? findHabitatMatches(me.board, selectedCardId, me.cubedHexes) : []
+
+  const heldActiveCards = me?.animalCards.filter((c) => c.cubesRemainingOnCard > 0).length ?? 0
 
   return (
     <div className={styles.board}>
@@ -66,7 +68,7 @@ export default function HBoard() {
                 </div>
                 <button
                   className={styles.draftBtn}
-                  disabled={!isMyTurn || state.pendingTokens.length > 0 || space.length === 0}
+                  disabled={!isMyTurn || state.hasDraftedThisTurn || space.length === 0}
                   onClick={() => handleTakeTokens(i)}
                 >
                   Draft
@@ -99,7 +101,7 @@ export default function HBoard() {
                   <span className={styles.animalTrack}>{def.track.join(' / ')}</span>
                   <button
                     className={styles.smallBtn}
-                    disabled={!isMyTurn || (me?.animalCards.length ?? 0) >= 4}
+                    disabled={!isMyTurn || state.hasTakenCardThisTurn || heldActiveCards >= MAX_ANIMAL_CARDS_HELD}
                     onClick={() => handleTakeAnimalCard(id)}
                   >
                     Take
@@ -125,17 +127,18 @@ export default function HBoard() {
               const stack = me?.board[key] ?? []
               const top = stack[stack.length - 1]
               const isMatch = myMatches.some((m) => m.q === q && m.r === r)
+              const isCubed = me?.cubedHexes.includes(key) ?? false
               return (
                 <button
                   key={key}
-                  className={`${styles.hex} ${top ? styles[top] : ''} ${isMatch ? styles.hexMatch : ''}`}
+                  className={`${styles.hex} ${top ? styles[top] : ''} ${isMatch ? styles.hexMatch : ''} ${isCubed ? styles.hexCubed : ''}`}
                   style={{ left: x + 160, top: y + 100 }}
-                  disabled={!isMyTurn || !selectedColor}
+                  disabled={!isMyTurn || !selectedColor || isCubed}
                   onClick={() => handlePlaceToken(q, r)}
-                  onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}` : 'empty')}
+                  onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}` : 'empty')}
                   onMouseLeave={() => setHoverInfo(null)}
                 >
-                  {stack.length > 0 && <span className={styles.hexHeight}>{stack.length}</span>}
+                  {stack.length > 0 && <span className={styles.hexHeight}>{isCubed ? '●' : stack.length}</span>}
                 </button>
               )
             })}
@@ -148,12 +151,18 @@ export default function HBoard() {
               {me.animalCards.map((pc) => {
                 const def = CARD_DEFS.get(pc.cardId)
                 if (!def) return null
+                const matches = def.track.length - pc.cubesRemainingOnCard
+                const complete = pc.cubesRemainingOnCard === 0
+                const currentValue = matches === 0 ? 0 : def.track[def.track.length - matches]
                 return (
                   <div key={pc.cardId} className={styles.myCard}>
-                    <span>{def.name} — {pc.cubesPlaced}/{def.track.length} cubes</span>
+                    <span>
+                      {def.name} — {matches}/{def.track.length} matched
+                      {complete ? ' (complete)' : ` · worth ${currentValue} pts now`}
+                    </span>
                     <button
                       className={styles.smallBtn}
-                      disabled={!isMyTurn}
+                      disabled={!isMyTurn || complete}
                       onClick={() => setSelectedCardId(selectedCardId === pc.cardId ? null : pc.cardId)}
                     >
                       {selectedCardId === pc.cardId ? 'Cancel' : 'Match'}

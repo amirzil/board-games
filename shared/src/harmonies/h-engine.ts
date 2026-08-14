@@ -107,23 +107,32 @@ function matchesHabitat(
   return true
 }
 
-/** All not-yet-claimed anchor+rotation matches for a card on a player's board. */
+/** Absolute hex that would receive the Animal cube for this anchor+rotation. */
+function cubeSlotHex(def: AnimalCardDef, anchorQ: number, anchorR: number, rotation: number): HexCoord {
+  const cell = def.habitat[def.cubeCellIndex]
+  const off = rotateOffset(cell.dq, cell.dr, rotation)
+  return { q: anchorQ + off.q, r: anchorR + off.r }
+}
+
+/**
+ * All anchor+rotation matches for a card on a player's board whose cube slot
+ * isn't already occupied by an Animal cube (a hex can only ever hold one).
+ */
 export function findHabitatMatches(
   board: Record<string, HexStack>,
   cardId: string,
-  claimed: { q: number; r: number; rotation: number }[]
+  cubedHexes: string[]
 ): { q: number; r: number; rotation: number }[] {
   const def = CARDS_BY_ID.get(cardId)
   if (!def) return []
-  const claimedSet = new Set(claimed.map((c) => `${c.q},${c.r},${c.rotation}`))
+  const cubedSet = new Set(cubedHexes)
   const results: { q: number; r: number; rotation: number }[] = []
   for (const cell of PERSONAL_BOARD_CELLS) {
     for (let rotation = 0; rotation < 6; rotation++) {
-      const key = `${cell.q},${cell.r},${rotation}`
-      if (claimedSet.has(key)) continue
-      if (matchesHabitat(board, def, cell.q, cell.r, rotation)) {
-        results.push({ q: cell.q, r: cell.r, rotation })
-      }
+      if (!matchesHabitat(board, def, cell.q, cell.r, rotation)) continue
+      const slot = cubeSlotHex(def, cell.q, cell.r, rotation)
+      if (cubedSet.has(hexKey(slot.q, slot.r))) continue
+      results.push({ q: cell.q, r: cell.r, rotation })
     }
   }
   return results
@@ -208,11 +217,16 @@ export function computeScore(player: HPlayerState): number {
   }
   total += Math.min(bestRiver, 6) * 1 + Math.max(0, bestRiver - 6) * 4
 
-  // Animal cards: score whatever the topmost still-empty track slot shows
+  // Animal cards: a card starts fully covered by its own cubes and scores 0
+  // until matched at least once. Each match moves the bottom-most cube onto
+  // the board, uncovering the next space up; score is whatever the topmost
+  // still-uncovered space shows, which is track[track.length - matches]
+  // given track is ordered best (index 0) to worst (last index).
   for (const pc of player.animalCards) {
     const def = CARDS_BY_ID.get(pc.cardId)
     if (!def) continue
-    total += pc.cubesPlaced < def.track.length ? def.track[pc.cubesPlaced] : 0
+    const matches = def.track.length - pc.cubesRemainingOnCard
+    total += matches === 0 ? 0 : def.track[def.track.length - matches]
   }
 
   return total
@@ -234,6 +248,7 @@ export function initHarmoniesGame(players: { id: string; name: string }[]): HGam
       id: p.id,
       name: p.name,
       board: {},
+      cubedHexes: [],
       animalCards: [],
       finalScore: null,
     })),
@@ -244,6 +259,7 @@ export function initHarmoniesGame(players: { id: string; name: string }[]): HGam
     animalDeck: shuffledCardIds,
     pendingTokens: [],
     hasDraftedThisTurn: false,
+    hasTakenCardThisTurn: false,
     finalRound: false,
     finalRoundTriggeredBy: null,
     winners: [],
@@ -273,6 +289,7 @@ export function applyHAction(state: HGameState, playerId: string, action: HActio
 
   switch (action.type) {
     case 'takeTokens': {
+      if (next.hasDraftedThisTurn) throw new Error('You may only draft tokens once per turn')
       if (next.pendingTokens.length > 0) throw new Error('Place your current tokens first')
       const { spaceIndex } = action
       if (spaceIndex < 0 || spaceIndex >= next.centralBoard.length) throw new Error('Invalid space')
@@ -287,8 +304,9 @@ export function applyHAction(state: HGameState, playerId: string, action: HActio
     case 'placeToken': {
       const { color, q, r } = action
       if (!BOARD_CELL_SET.has(hexKey(q, r))) throw new Error('Not a valid board cell')
-      if (!removeOne(next.pendingTokens, color)) throw new Error("You don't have that token to place")
       const key = hexKey(q, r)
+      if (player.cubedHexes.includes(key)) throw new Error('That space has an Animal cube on it')
+      if (!removeOne(next.pendingTokens, color)) throw new Error("You don't have that token to place")
       const stack = player.board[key] ?? []
       if (!canPlaceColor(color, stack)) {
         next.pendingTokens.push(color) // undo the removal before failing
@@ -300,11 +318,16 @@ export function applyHAction(state: HGameState, playerId: string, action: HActio
 
     case 'takeAnimalCard': {
       const { cardId } = action
-      if (player.animalCards.length >= MAX_ANIMAL_CARDS_HELD) {
+      if (next.hasTakenCardThisTurn) throw new Error('You may only take one Animal card per turn')
+      const heldCount = player.animalCards.filter((c) => c.cubesRemainingOnCard > 0).length
+      if (heldCount >= MAX_ANIMAL_CARDS_HELD) {
         throw new Error('You already hold the maximum number of Animal cards')
       }
+      const def = CARDS_BY_ID.get(cardId)
+      if (!def) throw new Error('Unknown Animal card')
       if (!removeOne(next.animalRow, cardId)) throw new Error('That Animal card is not available')
-      player.animalCards.push({ cardId, cubesPlaced: 0, claimed: [] })
+      player.animalCards.push({ cardId, cubesRemainingOnCard: def.track.length })
+      next.hasTakenCardThisTurn = true
       return next
     }
 
@@ -314,16 +337,15 @@ export function applyHAction(state: HGameState, playerId: string, action: HActio
       if (!def) throw new Error('Unknown Animal card')
       const held = player.animalCards.find((c) => c.cardId === cardId)
       if (!held) throw new Error('You do not hold that Animal card')
-      if (held.cubesPlaced >= def.track.length) throw new Error('That card is already full')
-      const alreadyClaimed = held.claimed.some(
-        (c) => c.q === anchorQ && c.r === anchorR && c.rotation === rotation
-      )
-      if (alreadyClaimed) throw new Error('That habitat match is already claimed')
+      if (held.cubesRemainingOnCard <= 0) throw new Error('That card is already complete')
       if (!matchesHabitat(player.board, def, anchorQ, anchorR, rotation)) {
         throw new Error('Habitat pattern is not formed there')
       }
-      held.cubesPlaced += 1
-      held.claimed.push({ q: anchorQ, r: anchorR, rotation })
+      const slot = cubeSlotHex(def, anchorQ, anchorR, rotation)
+      const slotKey = hexKey(slot.q, slot.r)
+      if (player.cubedHexes.includes(slotKey)) throw new Error('That space already has an Animal cube')
+      held.cubesRemainingOnCard -= 1
+      player.cubedHexes.push(slotKey)
       return next
     }
 
@@ -364,18 +386,15 @@ export function applyHAction(state: HGameState, playerId: string, action: HActio
         const best = Math.max(...next.players.map((p) => p.finalScore ?? 0))
         const leaders = next.players.filter((p) => p.finalScore === best)
         if (leaders.length > 1) {
-          const mostCubes = Math.max(
-            ...leaders.map((p) => p.animalCards.reduce((sum, c) => sum + c.cubesPlaced, 0))
-          )
-          next.winners = leaders
-            .filter((p) => p.animalCards.reduce((sum, c) => sum + c.cubesPlaced, 0) === mostCubes)
-            .map((p) => p.id)
+          const mostCubes = Math.max(...leaders.map((p) => p.cubedHexes.length))
+          next.winners = leaders.filter((p) => p.cubedHexes.length === mostCubes).map((p) => p.id)
         } else {
           next.winners = leaders.map((p) => p.id)
         }
       } else {
         next.currentPlayerIndex = nextIdx
         next.hasDraftedThisTurn = false
+        next.hasTakenCardThisTurn = false
       }
       return next
     }

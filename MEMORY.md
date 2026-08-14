@@ -129,3 +129,25 @@ small/large in practice, resize `PERSONAL_BOARD_CELLS`' radius there, not
 in the engine.
 
 Branch: `harmonies-engine`.
+
+## 2026-08-14 — Harmonies rules audit: Animal Card mechanic was backwards, plus 3 other real bugs
+
+**Decided:** Do a second, much deeper rules research pass (the user reported gameplay "doesn't work like the actual game") and fix everything found, rather than patch symptoms. Found a confirmed, well-sourced rule I'd gotten fundamentally wrong in the Phase 1 build, plus three enforcement gaps.
+
+**The big one — Animal Card cubes work in reverse of what Phase 1 implemented:**
+- Real rule: taking a card immediately places a cube on *every* one of its scoring spaces (card starts fully covered, scoring 0). Each successful habitat match moves the **bottom-most** cube from the card onto a specific board hex (permanently occupying it — "cannot place a token on a space occupied by an Animal cube"), uncovering the next space up. Score = whatever the topmost still-*un*covered space shows. Net effect: 0 matches scores 0, full completion scores the card's best value. A completed card also stops counting against the 4-card limit.
+- Phase 1 had this precisely backwards: modeled cubes as accumulating *onto* the board with no board-occupation effect, and scored the *first* match as best, decaying toward 0 — the opposite incentive structure, and it never blocked re-using a matched hex.
+- Rewrote as: `PlayerAnimalCard.cubesRemainingOnCard` (starts at `track.length`, counts down), `HPlayerState.cubedHexes` (blocks `placeToken`), `cubeCellIndex` on each card definition (which habitat cell receives the cube — all 14 starter cards use index 0 by convention). Score formula: `matches === 0 ? 0 : track[track.length - matches]`. Verified the full 0→1→2→full progression via direct engine script against `computeScore`.
+
+**Three enforcement gaps, none of which threw an error before (silently allowed):**
+1. `takeTokens` had no per-turn guard — a player could draft a *second* (or third...) batch of 3 tokens in the same turn after placing the first. This is likely what "number of chips to take" in the report was pointing at.
+2. `takeAnimalCard` had no per-turn guard either, despite "once per turn" being explicit in every source.
+3. The 4-card-limit check counted *all* held cards including completed ones, so it never actually freed up as designed (moot until the cube-mechanic rewrite above made "completed" a real state).
+
+**Also found and fixed, unrelated to rules but blocking verification:** a real connection race in `App.tsx`/`socket.ts` — the server emits `player_id` immediately on connect, which can arrive before React's `useEffect` attaches its listener, leaving `playerId` null and making the host see "waiting for host to start" in their own room. Fixed by buffering the first `player_id` at module scope in `socket.ts` (registered synchronously, before any network round-trip can complete) and having `App.tsx` consume the buffered value on mount. Pre-existing, not Harmonies-specific — just never surfaced before because the timing usually resolves in React's favor.
+
+**Why this happened:** Phase 1's rules research (previous session) relied on a handful of web-search snippets and didn't cross-check the Animal Card mechanic specifically — the description of "topmost space without a cube" is genuinely easy to misread in the direction Phase 1 took it. This session fetched multiple independent how-to-play sources specifically for the turn structure and card mechanics and cross-confirmed before touching code.
+
+**How to apply:** Any future engine change to Animal Cards must preserve the invariant that `cubedHexes` entries are permanent (never removed) and that `cubesRemainingOnCard` only counts down, never up. If new cards are added to `h-data.ts`, `cubeCellIndex` must point at a habitat cell that's sensible to occupy permanently (avoid making it a cell likely needed for many other cards' overlapping patterns).
+
+Branch: `harmonies-rules-fix`.
