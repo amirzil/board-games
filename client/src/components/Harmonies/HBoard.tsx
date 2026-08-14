@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { TokenColor } from '@splendor/shared'
-import { PERSONAL_BOARD_CELLS, ANIMAL_CARDS, MAX_ANIMAL_CARDS_HELD, findHabitatMatches, computeScore } from '@splendor/shared'
+import { PERSONAL_BOARD_CELLS, ANIMAL_CARDS, MAX_ANIMAL_CARDS_HELD, findHabitatMatches, computeScore, canPlaceColor } from '@splendor/shared'
 import { useGameStore } from '../../store/gameStore'
 import { useHGameStore } from '../../store/hGameStore'
 import socket from '../../socket'
@@ -144,14 +144,22 @@ export default function HBoard() {
               const top = stack[stack.length - 1]
               const isMatch = myMatches.some((m) => m.q === q && m.r === r)
               const isCubed = me?.cubedHexes.includes(key) ?? false
+              const isLegalTarget =
+                !!selectedColor && !isCubed && canPlaceColor(selectedColor as TokenColor, stack)
+              const isIllegalTarget = !!selectedColor && !isLegalTarget
+              const tileClass = [
+                isMatch ? styles.hexTileMatch : '',
+                isLegalTarget ? styles.hexTileLegal : '',
+                isIllegalTarget ? styles.hexTileIllegal : '',
+              ].filter(Boolean).join(' ')
               return (
                 <div key={key} className={styles.hexCell} style={{ left: x + 170, top: y + 110 }}>
-                  <HexTile topColor={top} className={isMatch ? styles.hexTileMatch : ''} />
+                  <HexTile topColor={top} className={tileClass} />
                   <AnimatePresence>
                     {stack.length > 0 && (
                       <motion.div
                         key={`${stack.length}-${top}-${isCubed}`}
-                        className={styles.pieceWrap}
+                        className={`${styles.pieceWrap} ${isIllegalTarget ? styles.pieceIllegal : ''}`}
                         initial={{ scale: 0.4, opacity: 0, y: 10 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         transition={{ type: 'spring', stiffness: 420, damping: 20 }}
@@ -162,7 +170,7 @@ export default function HBoard() {
                   </AnimatePresence>
                   <button
                     className={styles.hexHit}
-                    disabled={!isMyTurn || !selectedColor || isCubed}
+                    disabled={!isMyTurn || !selectedColor || !isLegalTarget}
                     onClick={() => handlePlaceToken(q, r)}
                     onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}` : 'empty')}
                     onMouseLeave={() => setHoverInfo(null)}

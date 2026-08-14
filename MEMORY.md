@@ -205,4 +205,45 @@ around it. Not a code issue; noting it in case it recurs.
 a 7th terrain type, or re-theming) only need to extend the color tables
 and `TokenPiece`'s per-color branch, not touch `HBoard.tsx`'s game logic.
 
+## 2026-08-14 — Stacking wasn't broken; there was no way to see where it worked
+
+**Decided:** Investigated a report that "the game does not allow placing
+any token over another." Traced the full pipeline end to end with direct
+engine scripts and live debug logging before touching anything — the
+engine's `canPlaceColor` correctly allows legal stacks (verified grey-on-
+grey and brown-then-green directly), the click reaches `handlePlaceToken`,
+the server correctly rejects illegal combinations, and the client
+correctly receives and displays the rejection via `ErrorToast`. Every
+piece of the mechanic already worked.
+
+The actual gap: nothing on the board told a player *where* a stack would
+succeed before they clicked. Every hex looked equally clickable regardless
+of the armed color, so a player who didn't already know "brown is a
+filler, cap it with green or red; grey only stacks on grey; blue/yellow
+never stack" would rack up silent-feeling rejections and reasonably
+conclude the feature didn't work — especially since the rejection toast
+is a small 4-second popup, easy to miss while looking at the board.
+
+Fixed by exporting `canPlaceColor` from `h-engine.ts` (single source of
+truth, same predicate the server uses to validate) and using it
+client-side: while a color is armed, legal target hexes get a green glow
+and illegal ones (including already-cubed hexes) are dimmed and disabled
+outright. A placement can no longer fail as a surprise — you only ever
+click hexes that are shown as valid.
+
+**Why:** This is a case where the fix is UX, not logic. Changing
+`canPlaceColor` would have "fixed" a bug that didn't exist and left the
+real problem (invisible rules) in place. Worth remembering when a bug
+report describes an experience ("X doesn't work") rather than a specific
+wrong output — the mechanism and the report can both be individually
+correct if the gap is discoverability.
+
+**How to apply:** If another action gets a similar "is this even a legal
+target" question in the future (e.g. Animal cube placement already has
+this via `findHabitatMatches` highlighting), prefer exposing the same
+predicate the engine uses for validation rather than re-deriving legality
+client-side — keeps the two from silently drifting apart.
+
+Branch: `harmonies-stack-fix`.
+
 Branch: `harmonies-3d-visuals`.
