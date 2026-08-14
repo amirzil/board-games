@@ -1,0 +1,68 @@
+.token {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.rim {
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 1;
+}
+
+.top {
+  stroke: rgba(0, 0, 0, 0.15);
+  stroke-width: 0.5;
+}
+
+.specular {
+  fill: rgba(255, 255, 255, 0.55);
+  filter: blur(1.8px);
+  pointer-events: none;
+}
+
+.plainShadow {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+}
+
+/* Forest green */
+.green .rim { fill: #163f22; }
+.green .stopLight { stop-color: #7fe39a; }
+.green .stopMid { stop-color: #2f9955; }
+.green .stopDark { stop-color: #1a5c34; }
+.green.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(47, 153, 85, 0.55)); }
+
+/* Stone grey */
+.grey .rim { fill: #3c4047; }
+.grey .stopLight { stop-color: #d6d9dd; }
+.grey .stopMid { stop-color: #8b909a; }
+.grey .stopDark { stop-color: #565b63; }
+.grey.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(139, 144, 154, 0.5)); }
+
+/* Water blue */
+.blue .rim { fill: #0f3a52; }
+.blue .stopLight { stop-color: #8fd6f5; }
+.blue .stopMid { stop-color: #2f8fc4; }
+.blue .stopDark { stop-color: #185a80; }
+.blue.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(47, 143, 196, 0.55)); }
+
+/* Wheat field yellow */
+.yellow .rim { fill: #5c4813; }
+.yellow .stopLight { stop-color: #fce89a; }
+.yellow .stopMid { stop-color: #d4a828; }
+.yellow .stopDark { stop-color: #96741a; }
+.yellow.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(212, 168, 40, 0.55)); }
+
+/* Clay building red */
+.red .rim { fill: #4a1a10; }
+.red .stopLight { stop-color: #f2a08d; }
+.red .stopMid { stop-color: #c1442c; }
+.red .stopDark { stop-color: #7a2415; }
+.red.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(193, 68, 44, 0.55)); }
+
+/* Wood brown */
+.brown .rim { fill: #3a2a15; }
+.brown .stopLight { stop-color: #d3a877; }
+.brown .stopMid { stop-color: #8a6239; }
+.brown .stopDark { stop-color: #5c4020; }
+.brown.glow { filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 5px rgba(138, 98, 57, 0.5)); }

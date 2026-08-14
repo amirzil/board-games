@@ -1,18 +1,29 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { TokenColor } from '@splendor/shared'
 import { PERSONAL_BOARD_CELLS, ANIMAL_CARDS, MAX_ANIMAL_CARDS_HELD, findHabitatMatches, computeScore } from '@splendor/shared'
 import { useGameStore } from '../../store/gameStore'
 import { useHGameStore } from '../../store/hGameStore'
 import socket from '../../socket'
+import HexToken from './HexToken'
+import HexTile from './HexTile'
+import TokenPiece from './TokenPiece'
 import styles from './HBoard.module.css'
 
-const HEX_SIZE = 30
+const HEX_SIZE = 26
 
 function axialToPixel(q: number, r: number) {
   const x = HEX_SIZE * 1.5 * q
   const y = HEX_SIZE * (Math.sqrt(3) / 2 * q + Math.sqrt(3) * r)
   return { x, y }
 }
+
+// Painted back-to-front (top of screen first) so a tile's extruded "skirt"
+// is correctly overlapped by whatever sits in front of it, like a real
+// isometric scene.
+const SORTED_CELLS = [...PERSONAL_BOARD_CELLS].sort(
+  (a, b) => axialToPixel(a.q, a.r).y - axialToPixel(b.q, b.r).y
+)
 
 const CARD_DEFS = new Map(ANIMAL_CARDS.map((c) => [c.id, c]))
 
@@ -31,8 +42,11 @@ export default function HBoard() {
 
   const handlePlaceToken = (q: number, r: number) => {
     if (!selectedColor) return
+    // Don't clear the selection here — if the server rejects an illegal
+    // placement, the token is still in hand and should stay armed for a
+    // retry. A successful placement clears it naturally via the state
+    // reset that runs whenever a fresh h_game_state arrives.
     socket.emit('h_action', { type: 'placeToken', color: selectedColor as TokenColor, q, r })
-    setSelectedColor(null)
   }
 
   const handleTakeAnimalCard = (cardId: string) => socket.emit('h_action', { type: 'takeAnimalCard', cardId })
@@ -63,7 +77,7 @@ export default function HBoard() {
               <div key={i} className={styles.space}>
                 <div className={styles.spaceTokens}>
                   {space.map((c, j) => (
-                    <span key={j} className={`${styles.token} ${styles[c]}`} />
+                    <HexToken key={j} color={c} glow={false} className={styles.spaceToken} />
                   ))}
                 </div>
                 <button
@@ -83,9 +97,11 @@ export default function HBoard() {
               {state.pendingTokens.map((c, i) => (
                 <button
                   key={i}
-                  className={`${styles.token} ${styles[c]} ${selectedColor === c ? styles.tokenSelected : ''}`}
+                  className={`${styles.handToken} ${selectedColor === c ? styles.handTokenSelected : ''}`}
                   onClick={() => setSelectedColor(c)}
-                />
+                >
+                  <HexToken color={c} />
+                </button>
               ))}
             </div>
           )}
@@ -121,7 +137,7 @@ export default function HBoard() {
         <div className={styles.myBoardArea}>
           <h3 className={styles.sectionTitle}>Your Landscape {me && `(est. ${computeScore(me)} pts)`}</h3>
           <div className={styles.hexGrid}>
-            {PERSONAL_BOARD_CELLS.map(({ q, r }) => {
+            {SORTED_CELLS.map(({ q, r }) => {
               const { x, y } = axialToPixel(q, r)
               const key = `${q},${r}`
               const stack = me?.board[key] ?? []
@@ -129,17 +145,29 @@ export default function HBoard() {
               const isMatch = myMatches.some((m) => m.q === q && m.r === r)
               const isCubed = me?.cubedHexes.includes(key) ?? false
               return (
-                <button
-                  key={key}
-                  className={`${styles.hex} ${top ? styles[top] : ''} ${isMatch ? styles.hexMatch : ''} ${isCubed ? styles.hexCubed : ''}`}
-                  style={{ left: x + 160, top: y + 100 }}
-                  disabled={!isMyTurn || !selectedColor || isCubed}
-                  onClick={() => handlePlaceToken(q, r)}
-                  onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}` : 'empty')}
-                  onMouseLeave={() => setHoverInfo(null)}
-                >
-                  {stack.length > 0 && <span className={styles.hexHeight}>{isCubed ? '●' : stack.length}</span>}
-                </button>
+                <div key={key} className={styles.hexCell} style={{ left: x + 170, top: y + 110 }}>
+                  <HexTile topColor={top} className={isMatch ? styles.hexTileMatch : ''} />
+                  <AnimatePresence>
+                    {stack.length > 0 && (
+                      <motion.div
+                        key={`${stack.length}-${top}-${isCubed}`}
+                        className={styles.pieceWrap}
+                        initial={{ scale: 0.4, opacity: 0, y: 10 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        transition={{ type: 'spring', stiffness: 420, damping: 20 }}
+                      >
+                        <TokenPiece stack={stack} isCubed={isCubed} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <button
+                    className={styles.hexHit}
+                    disabled={!isMyTurn || !selectedColor || isCubed}
+                    onClick={() => handlePlaceToken(q, r)}
+                    onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}` : 'empty')}
+                    onMouseLeave={() => setHoverInfo(null)}
+                  />
+                </div>
               )
             })}
           </div>
