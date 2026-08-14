@@ -4,7 +4,7 @@ import { useSIGameStore } from './store/siGameStore'
 import { useHGameStore } from './store/hGameStore'
 import { useTutorialStore } from './store/tutorialStore'
 import { useSITutorialStore } from './store/siTutorialStore'
-import socket from './socket'
+import socket, { getBufferedPlayerId } from './socket'
 import HomeScreen from './components/Home/HomeScreen'
 import LobbyScreen from './components/Lobby/LobbyScreen'
 import WaitingRoom from './components/Lobby/WaitingRoom'
@@ -28,6 +28,9 @@ export default function App() {
   const [selectedGame, setSelectedGame] = useState<string | null>(null)
 
   useEffect(() => {
+    const buffered = getBufferedPlayerId()
+    if (buffered) setPlayerId(buffered)
+
     socket.on('player_id', setPlayerId)
     socket.on('room_update', setRoom)
     socket.on('game_state', setGameState)

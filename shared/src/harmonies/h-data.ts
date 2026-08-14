@@ -57,6 +57,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 1, dr: 0, color: 'yellow' },
       { dq: 0, dr: 1, color: 'yellow' },
     ],
+    cubeCellIndex: 0,
     track: [7, 5, 3],
   },
   {
@@ -66,6 +67,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'green', height: 3 },
       { dq: 1, dr: 0, color: 'green' },
     ],
+    cubeCellIndex: 0,
     track: [9, 6, 3],
   },
   {
@@ -75,6 +77,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'blue' },
       { dq: 1, dr: 0, color: 'yellow' },
     ],
+    cubeCellIndex: 0,
     track: [5, 3, 1],
   },
   {
@@ -85,12 +88,14 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 1, dr: 0, color: 'blue' },
       { dq: 2, dr: 0, color: 'blue' },
     ],
+    cubeCellIndex: 0,
     track: [8, 5, 2],
   },
   {
     id: 'bear',
     name: 'Bear',
     habitat: [{ dq: 0, dr: 0, color: 'grey', height: 3 }],
+    cubeCellIndex: 0,
     track: [6, 4, 2],
   },
   {
@@ -100,6 +105,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'yellow' },
       { dq: 1, dr: 0, color: 'yellow' },
     ],
+    cubeCellIndex: 0,
     track: [4, 2, 1],
   },
   {
@@ -110,6 +116,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 1, dr: 0, color: 'green' },
       { dq: 0, dr: 1, color: 'green' },
     ],
+    cubeCellIndex: 0,
     track: [7, 4, 2],
   },
   {
@@ -119,6 +126,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'red' },
       { dq: 1, dr: 0, color: 'blue' },
     ],
+    cubeCellIndex: 0,
     track: [5, 3, 1],
   },
   {
@@ -128,6 +136,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'grey', height: 2 },
       { dq: 1, dr: 0, color: 'grey', height: 2 },
     ],
+    cubeCellIndex: 0,
     track: [8, 5, 2],
   },
   {
@@ -137,6 +146,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'green', height: 2 },
       { dq: 1, dr: 0, color: 'green', height: 1 },
     ],
+    cubeCellIndex: 0,
     track: [6, 4, 2],
   },
   {
@@ -147,6 +157,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 1, dr: 0, color: 'blue' },
       { dq: 1, dr: -1, color: 'red' },
     ],
+    cubeCellIndex: 0,
     track: [9, 6, 3],
   },
   {
@@ -157,6 +168,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 1, dr: 0, color: 'yellow' },
       { dq: 0, dr: 1, color: 'green' },
     ],
+    cubeCellIndex: 0,
     track: [8, 5, 2],
   },
   {
@@ -166,6 +178,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'green', height: 1 },
       { dq: 1, dr: 0, color: 'green', height: 3 },
     ],
+    cubeCellIndex: 0,
     track: [7, 4, 2],
   },
   {
@@ -175,6 +188,7 @@ export const ANIMAL_CARDS: AnimalCardDef[] = [
       { dq: 0, dr: 0, color: 'grey', height: 3 },
       { dq: 1, dr: 0, color: 'grey', height: 3 },
     ],
+    cubeCellIndex: 0,
     track: [10, 6, 3],
   },
 ]
