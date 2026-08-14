@@ -247,3 +247,62 @@ client-side — keeps the two from silently drifting apart.
 Branch: `harmonies-stack-fix`.
 
 Branch: `harmonies-3d-visuals`.
+
+## 2026-08-14 — Personal board shape rounded out; Phase 3 watercolor Animal Cards
+
+**Decided (board shape):** Replaced the 19-cell plain hexagon-of-hexagons
+personal board with a 37-cell shape: the same radius-2 hexagon core plus a
+3-cell fan filling out each of the 6 corners. `PERSONAL_BOARD_CELLS` in
+`shared/src/harmonies/h-data.ts` is still just a flat list of axial
+coordinates, so the engine needed no changes — only `HBoard.tsx`'s per-cell
+pixel offset and `HBoard.module.css`'s `.hexGrid` height grew to fit the
+larger bounding box (x:[-117,117], y:[-135,135] at HEX_SIZE=26).
+
+**Why:** User feedback that the board "is not identical to the real one...
+missing the corners" — a plain hexagon-of-hexagons comes to a sharp single-
+cell point at each corner, reading as cut off next to the real board's
+rounder outline. Extensive search (BGG, Libellud, retailer/review pages)
+still couldn't turn up an authoritative source for the exact real outline,
+so this is an explicit best-interpretation fix, not a confirmed match —
+flagged to the user before implementing.
+
+**Decided (Phase 3 art):** Built painterly-watercolor original
+illustrations for all 14 Animal Cards (`AnimalIllustration.tsx`), a
+different invented technique from Splendor's vintage-engraving card art —
+chosen to fit Harmonies' nature theme rather than reuse Splendor's look.
+Each animal is a handful of simple SVG primitives (ellipses/polygons) piped
+through a shared per-instance `<filter>`: `feTurbulence` +
+`feDisplacementMap` wobbles the edges away from crisp vector outlines, then
+a second turbulence pass masked to the shape's own alpha (`feComposite
+operator="in"`) adds pigment-grain texture. Fine details (eyes, antlers,
+whiskers) render unfiltered on top so the animal stays legible at card
+size. Also built `HabitatDiagram.tsx` (small hex-pattern preview of a
+card's required colors/heights) and a unified `AnimalCard.tsx` used in both
+the central Animal Row (`layout="card"`, vertical) and the player's held
+cards (`layout="row"`, horizontal thumbnail + progress track) — replacing
+the plain text rows in `HBoard.tsx`.
+
+**Why watercolor via filter, not hand-drawn paths:** Hand-crafting organic
+bezier silhouettes for 14 animals via text would be slow and inconsistent;
+letting the displacement/turbulence filter add the "hand-painted"
+irregularity to simple geometric primitives gets a cohesive painterly look
+across the whole roster for much less code, and keeps every animal's art
+data as a small declarative list (easy to tweak one animal without
+touching the filter or the others).
+
+**Why the habitat diagram is a genuine feature add, not just decoration:**
+Previously a card's required pattern was only discoverable by drafting it
+and using "Match" to see highlighted board hexes (see the stacking-
+discoverability entry above) — the card itself showed no pattern info at
+all. Rendering the actual `habitat` cells as small colored hexes closes
+that same kind of discoverability gap up front.
+
+**How to apply:** If more animals are added later, follow the
+`ANIMAL_ART` entry shape in `AnimalIllustration.tsx` (a few `washes`
+ellipses for body/head, `polys` for ears/beaks/fins, unfiltered `dots`/
+`lines` for eyes and thin details) — no new filter or component work
+needed. If the board shape still doesn't look right once compared against
+a real photo, only `PERSONAL_BOARD_CELLS` needs to change; nothing else
+depends on the exact coordinate list.
+
+Branch: `harmonies-phase3`.

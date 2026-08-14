@@ -91,25 +91,13 @@
 .pendingLabel { font-family: var(--font-heading); font-size: 0.75rem; }
 
 .animalRow { display: flex; gap: 8px; flex-wrap: wrap; }
-.animalCard {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 8px;
-  width: 120px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-}
-.animalName { font-family: var(--font-heading); font-size: 0.85rem; }
-.animalTrack { font-size: 0.7rem; color: rgba(245, 234, 208, 0.6); }
 
 .endTurnBtn { margin-top: 12px; padding: 8px 20px; font-size: 0.8rem; }
 
 .myBoardArea { flex: 1.4; min-width: 380px; }
 .hexGrid {
   position: relative;
-  height: 400px;
+  height: 520px;
   margin: 0 auto;
 }
 
@@ -150,17 +138,7 @@
 
 .hoverInfo { text-align: center; font-size: 0.75rem; color: rgba(245, 234, 208, 0.5); }
 
-.myCards { margin-top: 16px; }
-.myCard {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-}
+.myCards { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; }
 .matches { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
 
 .others { width: 220px; display: flex; flex-direction: column; gap: 8px; }

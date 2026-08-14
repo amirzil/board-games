@@ -8,6 +8,7 @@ import socket from '../../socket'
 import HexToken from './HexToken'
 import HexTile from './HexTile'
 import TokenPiece from './TokenPiece'
+import AnimalCard from './AnimalCard'
 import styles from './HBoard.module.css'
 
 const HEX_SIZE = 26
@@ -112,17 +113,14 @@ export default function HBoard() {
               const def = CARD_DEFS.get(id)
               if (!def) return null
               return (
-                <div key={id} className={styles.animalCard}>
-                  <span className={styles.animalName}>{def.name}</span>
-                  <span className={styles.animalTrack}>{def.track.join(' / ')}</span>
-                  <button
-                    className={styles.smallBtn}
-                    disabled={!isMyTurn || state.hasTakenCardThisTurn || heldActiveCards >= MAX_ANIMAL_CARDS_HELD}
-                    onClick={() => handleTakeAnimalCard(id)}
-                  >
-                    Take
-                  </button>
-                </div>
+                <AnimalCard
+                  key={id}
+                  def={def}
+                  layout="card"
+                  actionLabel="Take"
+                  actionDisabled={!isMyTurn || state.hasTakenCardThisTurn || heldActiveCards >= MAX_ANIMAL_CARDS_HELD}
+                  onAction={() => handleTakeAnimalCard(id)}
+                />
               )
             })}
           </div>
@@ -153,7 +151,7 @@ export default function HBoard() {
                 isIllegalTarget ? styles.hexTileIllegal : '',
               ].filter(Boolean).join(' ')
               return (
-                <div key={key} className={styles.hexCell} style={{ left: x + 170, top: y + 110 }}>
+                <div key={key} className={styles.hexCell} style={{ left: x + 190, top: y + 175 }}>
                   <HexTile topColor={top} className={tileClass} />
                   <AnimatePresence>
                     {stack.length > 0 && (
@@ -191,19 +189,16 @@ export default function HBoard() {
                 const complete = pc.cubesRemainingOnCard === 0
                 const currentValue = matches === 0 ? 0 : def.track[def.track.length - matches]
                 return (
-                  <div key={pc.cardId} className={styles.myCard}>
-                    <span>
-                      {def.name} — {matches}/{def.track.length} matched
-                      {complete ? ' (complete)' : ` · worth ${currentValue} pts now`}
-                    </span>
-                    <button
-                      className={styles.smallBtn}
-                      disabled={!isMyTurn || complete}
-                      onClick={() => setSelectedCardId(selectedCardId === pc.cardId ? null : pc.cardId)}
-                    >
-                      {selectedCardId === pc.cardId ? 'Cancel' : 'Match'}
-                    </button>
-                  </div>
+                  <AnimalCard
+                    key={pc.cardId}
+                    def={def}
+                    layout="row"
+                    selected={selectedCardId === pc.cardId}
+                    progress={{ matches, complete, currentValue }}
+                    actionLabel={selectedCardId === pc.cardId ? 'Cancel' : 'Match'}
+                    actionDisabled={!isMyTurn || complete}
+                    onAction={() => setSelectedCardId(selectedCardId === pc.cardId ? null : pc.cardId)}
+                  />
                 )
               })}
               {selectedCardId && (
