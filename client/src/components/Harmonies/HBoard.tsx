@@ -12,6 +12,11 @@ import AnimalCard from './AnimalCard'
 import styles from './HBoard.module.css'
 
 const HEX_SIZE = 26
+// Half the grid's own pixel bounding box (radius-2 hexagon at HEX_SIZE=26 is
+// 208x232) — shifts cell coordinates, which are centered on (0,0), into the
+// grid's top-left-origin box so it can be placed inside the larger mat.
+const GRID_OFFSET_X = 104
+const GRID_OFFSET_Y = 116
 
 function axialToPixel(q: number, r: number) {
   const x = HEX_SIZE * 1.5 * q
@@ -134,48 +139,69 @@ export default function HBoard() {
 
         <div className={styles.myBoardArea}>
           <h3 className={styles.sectionTitle}>Your Landscape {me && `(est. ${computeScore(me)} pts)`}</h3>
-          <div className={styles.hexGrid}>
-            {SORTED_CELLS.map(({ q, r }) => {
-              const { x, y } = axialToPixel(q, r)
-              const key = `${q},${r}`
-              const stack = me?.board[key] ?? []
-              const top = stack[stack.length - 1]
-              const isMatch = myMatches.some((m) => m.q === q && m.r === r)
-              const isCubed = me?.cubedHexes.includes(key) ?? false
-              const isLegalTarget =
-                !!selectedColor && !isCubed && canPlaceColor(selectedColor as TokenColor, stack)
-              const isIllegalTarget = !!selectedColor && !isLegalTarget
-              const tileClass = [
-                isMatch ? styles.hexTileMatch : '',
-                isLegalTarget ? styles.hexTileLegal : '',
-                isIllegalTarget ? styles.hexTileIllegal : '',
-              ].filter(Boolean).join(' ')
-              return (
-                <div key={key} className={styles.hexCell} style={{ left: x + 190, top: y + 175 }}>
-                  <HexTile topColor={top} className={tileClass} />
-                  <AnimatePresence>
-                    {stack.length > 0 && (
-                      <motion.div
-                        key={`${stack.length}-${top}-${isCubed}`}
-                        className={`${styles.pieceWrap} ${isIllegalTarget ? styles.pieceIllegal : ''}`}
-                        initial={{ scale: 0.4, opacity: 0, y: 10 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        transition={{ type: 'spring', stiffness: 420, damping: 20 }}
-                      >
-                        <TokenPiece stack={stack} isCubed={isCubed} />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <button
-                    className={styles.hexHit}
-                    disabled={!isMyTurn || !selectedColor || !isLegalTarget}
-                    onClick={() => handlePlaceToken(q, r)}
-                    onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}` : 'empty')}
-                    onMouseLeave={() => setHoverInfo(null)}
-                  />
-                </div>
-              )
-            })}
+          <div className={styles.boardMat}>
+            <svg className={styles.matDecoration} viewBox="0 0 448 313" preserveAspectRatio="none" aria-hidden="true">
+              <path
+                d="M18,210 Q50,190 85,205 T160,200"
+                stroke="rgba(70,50,20,0.4)" strokeWidth="2.5" fill="none"
+              />
+              <path
+                d="M10,240 Q46,222 90,236 T175,230"
+                stroke="rgba(70,50,20,0.35)" strokeWidth="2.5" fill="none"
+              />
+              <path
+                d="M22,270 Q55,254 95,266 T165,262"
+                stroke="rgba(70,50,20,0.3)" strokeWidth="2.5" fill="none"
+              />
+              <path
+                d="M370,110 Q392,100 412,112 Q426,120 418,136 Q404,148 386,138 Q368,128 370,110 Z"
+                fill="rgba(63,143,150,0.55)"
+              />
+              <path d="M378,116 Q392,110 404,118" stroke="rgba(220,240,240,0.5)" strokeWidth="1.5" fill="none" />
+            </svg>
+            <div className={styles.hexGrid}>
+              {SORTED_CELLS.map(({ q, r }) => {
+                const { x, y } = axialToPixel(q, r)
+                const key = `${q},${r}`
+                const stack = me?.board[key] ?? []
+                const top = stack[stack.length - 1]
+                const isMatch = myMatches.some((m) => m.q === q && m.r === r)
+                const isCubed = me?.cubedHexes.includes(key) ?? false
+                const isLegalTarget =
+                  !!selectedColor && !isCubed && canPlaceColor(selectedColor as TokenColor, stack)
+                const isIllegalTarget = !!selectedColor && !isLegalTarget
+                const tileClass = [
+                  isMatch ? styles.hexTileMatch : '',
+                  isLegalTarget ? styles.hexTileLegal : '',
+                  isIllegalTarget ? styles.hexTileIllegal : '',
+                ].filter(Boolean).join(' ')
+                return (
+                  <div key={key} className={styles.hexCell} style={{ left: x + GRID_OFFSET_X, top: y + GRID_OFFSET_Y }}>
+                    <HexTile topColor={top} className={tileClass} />
+                    <AnimatePresence>
+                      {stack.length > 0 && (
+                        <motion.div
+                          key={`${stack.length}-${top}-${isCubed}`}
+                          className={`${styles.pieceWrap} ${isIllegalTarget ? styles.pieceIllegal : ''}`}
+                          initial={{ scale: 0.4, opacity: 0, y: 10 }}
+                          animate={{ scale: 1, opacity: 1, y: 0 }}
+                          transition={{ type: 'spring', stiffness: 420, damping: 20 }}
+                        >
+                          <TokenPiece stack={stack} isCubed={isCubed} />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <button
+                      className={styles.hexHit}
+                      disabled={!isMyTurn || !selectedColor || !isLegalTarget}
+                      onClick={() => handlePlaceToken(q, r)}
+                      onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}` : 'empty')}
+                      onMouseLeave={() => setHoverInfo(null)}
+                    />
+                  </div>
+                )
+              })}
+            </div>
           </div>
           {hoverInfo && <p className={styles.hoverInfo}>{hoverInfo}</p>}
 
