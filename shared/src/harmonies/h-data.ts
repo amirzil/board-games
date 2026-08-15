@@ -10,36 +10,29 @@ export const AXIAL_DIRECTIONS: HexCoord[] = [
 ]
 
 // --- Personal board shape -------------------------------------------------
-// The real game's exact personal-board outline still couldn't be verified
-// from available sources. This is a revised original layout: a radius-2
-// hexagon core (19 cells) with each of the 6 corners rounded out by a small
-// fan of cells one ring further out, rather than a plain hexagon-of-hexagons
-// (whose corners come to a single-cell point and read as "cut off" compared
-// to the rounder outline of the real board). The engine only depends on
-// this being *some* list of axial coordinates, so the exact shape can be
-// revised again later without touching h-engine.ts.
+// A plain radius-2 hexagon (19 cells). An earlier revision added a 3-cell
+// "corner fan" to each of the 6 points, on the theory that a hex-of-hexagons
+// reads as "missing corners" next to the real board's rounder outline — but
+// a reference photo of the physical board showed the actual mismatch was
+// structural, not about this shape at all: the real board is a big rounded
+// wooden mat with painted terrain decoration filling a wide border around a
+// comparatively modest hex cluster, not a mat that IS the hex outline. Once
+// HBoard renders that surrounding mat (see HBoard.module.css's `.boardMat`),
+// a plain hexagon reads correctly, so the corner-fan cells were reverted.
+// The exact real cell count still isn't verifiable from the low-resolution
+// reference photo — 19 is a clean baseline, easy to revise later since nothing
+// outside this file depends on the exact coordinate list.
 export const PERSONAL_BOARD_CELLS: HexCoord[] = (() => {
   const N = 2
-  const cells = new Map<string, HexCoord>()
-  const add = (c: HexCoord) => cells.set(`${c.q},${c.r}`, c)
+  const cells: HexCoord[] = []
 
   for (let q = -N; q <= N; q++) {
     const rMin = Math.max(-N, -q - N)
     const rMax = Math.min(N, -q + N)
-    for (let r = rMin; r <= rMax; r++) add({ q, r })
+    for (let r = rMin; r <= rMax; r++) cells.push({ q, r })
   }
 
-  for (let i = 0; i < 6; i++) {
-    const dir = AXIAL_DIRECTIONS[i]
-    const prevDir = AXIAL_DIRECTIONS[(i + 5) % 6]
-    const nextDir = AXIAL_DIRECTIONS[(i + 1) % 6]
-    const corner = { q: dir.q * N, r: dir.r * N }
-    add({ q: corner.q + dir.q, r: corner.r + dir.r })
-    add({ q: corner.q + prevDir.q, r: corner.r + prevDir.r })
-    add({ q: corner.q + nextDir.q, r: corner.r + nextDir.r })
-  }
-
-  return Array.from(cells.values())
+  return cells
 })()
 
 // --- Token pool ------------------------------------------------------------

@@ -306,3 +306,57 @@ a real photo, only `PERSONAL_BOARD_CELLS` needs to change; nothing else
 depends on the exact coordinate list.
 
 Branch: `harmonies-phase3`.
+
+## 2026-08-15 — Board rebuilt as a mat + modest grid, from an actual reference photo
+
+**Decided:** The user supplied a real photo of the physical Harmonies board
+for the first time this project. It showed the previous fix was solving the
+wrong problem: the actual board is a big rounded wooden mat with painted
+terrain decoration (contour lines, a river/lake accent) filling a wide
+border around a comparatively modest, plain hex cluster — not a mat whose
+outline IS the hex grid. Reverted `PERSONAL_BOARD_CELLS` in
+`shared/src/harmonies/h-data.ts` from the 37-cell "corner fan" shape back
+to a plain 19-cell radius-2 hexagon, and added a `.boardMat` layer in
+`HBoard.tsx`/`HBoard.module.css`: a fixed-size div with an asymmetric
+`border-radius` (flatter top, generously rounded bottom) and a wood-tone
+gradient, containing a small decorative SVG (contour-line paths bottom-left,
+a teal blob right side) plus the hex grid positioned as a smaller inset
+cluster rather than filling the mat.
+
+**Why the previous "corner fan" fix was wrong:** It was based on comparing
+the hex grid's own outline to the real board's outline, since no reference
+photo was available yet — a reasonable inference from the user's "missing
+the corners" description, but it targeted the wrong shape. The real
+mismatch was structural (mat vs. grid, two different shapes at two
+different sizes), not the grid's cell arrangement. Once an actual photo
+was available this became unambiguous; extrapolating too far from a
+verbal description alone, when no image exists yet, is a trap worth
+naming explicitly.
+
+**Also fixed (unrelated to the reference photo, from direct usage
+feedback):** the "Your Animal Cards" list stacked vertically, growing the
+page indefinitely as a player collected cards — changed `.myCards` to
+`flex-direction: row` with wrapping. Also tightened spacing throughout
+`HBoard.module.css` (page padding/gaps, section margins) and shrank the
+`AnimalCard` "card" layout (132px → 100px wide) so all 5 central Animal
+Row cards fit on one line and the whole board view fits on one screen
+without scrolling, at least at the 1280px-wide viewport this was verified
+against.
+
+**Rejected / open question — Animal Card habitat-token layout:** The user
+also asked to match the real card's token layout exactly, but the supplied
+photo turns out to show the rulebook/box cover propped up next to the
+board (a landscape painting + two token icons), not an actual Animal Card
+— so there was nothing to match it against. Left `HabitatDiagram` as-is
+(a small hex-pattern preview using the same colors as the board tokens).
+Revisit if a photo of an actual card becomes available.
+
+**How to apply:** Trust a real reference photo over an inferred one — if
+another visual complaint comes in without an image attached, ask for one
+before redesigning, rather than guessing at a shape/layout from words
+alone a second time. The 3-column layout (Central Board | board mat |
+Players) still has to fight for horizontal space at narrow viewports;
+if a user reports wrapping/scrolling again at a specific window size,
+that's the first place to look.
+
+Branch: `harmonies-board-v2`.

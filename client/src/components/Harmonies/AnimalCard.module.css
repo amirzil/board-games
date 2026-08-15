@@ -15,22 +15,25 @@
 .card.card {
   display: flex;
   flex-direction: column;
-  width: 132px;
+  width: 100px;
 }
-.card.card .illoWrap { height: 90px; }
-.card.card .body { padding: 6px 7px 8px; gap: 4px; }
+.card.card .illoWrap { height: 62px; }
+.card.card .body { padding: 4px 5px 5px; gap: 2px; }
+.card.card .habitatDiagram { width: 40px; height: 22px; }
 
 /* Compact horizontal row, used for cards a player already holds */
 .card.row {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
-  padding: 5px 8px 5px 5px;
+  gap: 6px;
+  padding: 4px 7px 4px 4px;
+  width: 190px;
+  flex-shrink: 0;
 }
-.card.row .illoWrap { width: 46px; height: 46px; border-radius: 6px; flex-shrink: 0; }
+.card.row .illoWrap { width: 38px; height: 38px; border-radius: 6px; flex-shrink: 0; }
 .card.row .body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-.card.row .habitatDiagram { width: 44px; height: 24px; }
+.card.row .habitatDiagram { width: 40px; height: 22px; }
 .card.row .track { margin-top: 1px; }
 
 .illoWrap {
@@ -68,8 +71,8 @@
 
 .name {
   font-family: var(--font-heading);
-  font-size: 0.8rem;
-  letter-spacing: 0.03em;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
 }
 
 .habitatDiagram { width: 54px; height: 30px; }
@@ -79,9 +82,9 @@
   gap: 3px;
 }
 .step {
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-family: var(--font-heading);
-  padding: 1px 4px;
+  padding: 1px 3px;
   border-radius: 4px;
   background: rgba(58, 47, 28, 0.12);
   color: rgba(58, 47, 28, 0.65);
