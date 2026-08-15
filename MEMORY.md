@@ -418,3 +418,30 @@ hit while testing this — a worktree with no local `node_modules` can
 silently run against the *primary checkout's* code.
 
 Branch: `harmonies-match-fix`.
+
+## 2026-08-15 — Site favicon added
+
+**Decided:** Added `client/public/favicon.svg` — a faceted gold hex-coin
+(dark rim + radial-gradient top face), same technique as `HexToken.tsx`'s
+loose-token look, referenced from `client/index.html` via
+`<link rel="icon" type="image/svg+xml">`. No PNG/.ico fallback.
+
+**Why this shape/style:** The site hosts three games now (Splendor, Spirit
+Island, Harmonies); a hex tile is more generic than a Splendor gem and
+ties to the two hex-grid games, and reusing the existing faceted-coin
+rendering technique keeps it visually consistent with the rest of the
+site rather than introducing a new one-off asset. Verified legible at
+actual favicon sizes (32px and 16px) before shipping, not just at full
+render size.
+
+**Rejected:** A raster `.ico`/PNG fallback — every current mainstream
+browser supports SVG favicons; skipped the extra generation step for a
+personal project favicon. Revisit only if a specific old-browser
+requirement shows up.
+
+**Note:** `client/index.html`'s `<title>` still says "Splendor" even
+though the site hosts three games now — left untouched since it wasn't
+part of this request; worth revisiting together with the favicon if the
+title is ever addressed.
+
+Branch: `site-favicon`.
