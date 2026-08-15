@@ -10,18 +10,13 @@ export const AXIAL_DIRECTIONS: HexCoord[] = [
 ]
 
 // --- Personal board shape -------------------------------------------------
-// A plain radius-2 hexagon (19 cells). An earlier revision added a 3-cell
-// "corner fan" to each of the 6 points, on the theory that a hex-of-hexagons
-// reads as "missing corners" next to the real board's rounder outline — but
-// a reference photo of the physical board showed the actual mismatch was
-// structural, not about this shape at all: the real board is a big rounded
-// wooden mat with painted terrain decoration filling a wide border around a
-// comparatively modest hex cluster, not a mat that IS the hex outline. Once
-// HBoard renders that surrounding mat (see HBoard.module.css's `.boardMat`),
-// a plain hexagon reads correctly, so the corner-fan cells were reverted.
-// The exact real cell count still isn't verifiable from the low-resolution
-// reference photo — 19 is a clean baseline, easy to revise later since nothing
-// outside this file depends on the exact coordinate list.
+// Column heights 5,4,5,4,5 (23 cells) per direct user correction against
+// the real board: a plain radius-2 hexagon (19 cells, columns 3,4,5,4,3)
+// tapers to a single cell at its leftmost/rightmost columns, which reads as
+// cut off compared to the real board's flatter ends. Extending the two end
+// columns (q=-2 and q=2) by one cell on each side brings them up to 5,
+// matching the real board's column profile without changing the 4,5,4
+// middle columns.
 export const PERSONAL_BOARD_CELLS: HexCoord[] = (() => {
   const N = 2
   const cells: HexCoord[] = []
@@ -29,7 +24,8 @@ export const PERSONAL_BOARD_CELLS: HexCoord[] = (() => {
   for (let q = -N; q <= N; q++) {
     const rMin = Math.max(-N, -q - N)
     const rMax = Math.min(N, -q + N)
-    for (let r = rMin; r <= rMax; r++) cells.push({ q, r })
+    const extend = Math.abs(q) === N ? 1 : 0
+    for (let r = rMin - extend; r <= rMax + extend; r++) cells.push({ q, r })
   }
 
   return cells

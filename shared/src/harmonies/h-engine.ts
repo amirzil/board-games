@@ -117,22 +117,25 @@ function cubeSlotHex(def: AnimalCardDef, anchorQ: number, anchorR: number, rotat
 /**
  * All anchor+rotation matches for a card on a player's board whose cube slot
  * isn't already occupied by an Animal cube (a hex can only ever hold one).
+ * Includes the cube's destination hex (slotQ/slotR) directly — this is the
+ * hex the player actually needs to click, since the anchor (q/r) is just an
+ * internal search coordinate and isn't necessarily the cube's landing spot.
  */
 export function findHabitatMatches(
   board: Record<string, HexStack>,
   cardId: string,
   cubedHexes: string[]
-): { q: number; r: number; rotation: number }[] {
+): { q: number; r: number; rotation: number; slotQ: number; slotR: number }[] {
   const def = CARDS_BY_ID.get(cardId)
   if (!def) return []
   const cubedSet = new Set(cubedHexes)
-  const results: { q: number; r: number; rotation: number }[] = []
+  const results: { q: number; r: number; rotation: number; slotQ: number; slotR: number }[] = []
   for (const cell of PERSONAL_BOARD_CELLS) {
     for (let rotation = 0; rotation < 6; rotation++) {
       if (!matchesHabitat(board, def, cell.q, cell.r, rotation)) continue
       const slot = cubeSlotHex(def, cell.q, cell.r, rotation)
       if (cubedSet.has(hexKey(slot.q, slot.r))) continue
-      results.push({ q: cell.q, r: cell.r, rotation })
+      results.push({ q: cell.q, r: cell.r, rotation, slotQ: slot.q, slotR: slot.r })
     }
   }
   return results
