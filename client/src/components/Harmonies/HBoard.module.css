@@ -65,7 +65,7 @@
 }
 .handTokenSelected { outline: 3px solid var(--accent-gold); border-radius: 50%; }
 
-.draftBtn, .smallBtn, .endTurnBtn {
+.draftBtn, .endTurnBtn {
   font-family: var(--font-heading);
   font-size: 0.7rem;
   letter-spacing: 0.06em;
@@ -77,7 +77,7 @@
   color: var(--text-gold);
   cursor: pointer;
 }
-.draftBtn:disabled, .smallBtn:disabled, .endTurnBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+.draftBtn:disabled, .endTurnBtn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .pending {
   display: flex;
@@ -135,7 +135,17 @@
   transform: translate(-50%, -50%);
 }
 
-.hexTileMatch { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 6px rgba(201, 168, 76, 0.9)); }
+/* While a card is selected for matching, the hex that would actually
+   receive the cube pulses gold and is directly clickable — replaces a
+   coordinate-list panel that meant nothing spatially to the player. */
+.hexTileCubeMatch {
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 8px rgba(201, 168, 76, 0.95));
+  animation: cubePulse 1.4s ease-in-out infinite;
+}
+@keyframes cubePulse {
+  0%, 100% { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 6px rgba(201, 168, 76, 0.7)); }
+  50% { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 13px rgba(201, 168, 76, 1)); }
+}
 
 /* While a token color is armed, legal hexes invite a click and illegal
    ones are visibly muted — so a placement never fails as a surprise. */
@@ -166,7 +176,7 @@
 .hoverInfo { text-align: center; font-size: 0.75rem; color: rgba(245, 234, 208, 0.5); }
 
 .myCards { margin-top: 10px; display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; }
-.matches { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.matchHint { font-size: 0.78rem; color: var(--text-gold); margin-top: 6px; width: 100%; }
 
 .others { width: 180px; display: flex; flex-direction: column; gap: 8px; }
 .otherPlayer {

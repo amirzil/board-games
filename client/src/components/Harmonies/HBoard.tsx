@@ -165,13 +165,14 @@ export default function HBoard() {
                 const key = `${q},${r}`
                 const stack = me?.board[key] ?? []
                 const top = stack[stack.length - 1]
-                const isMatch = myMatches.some((m) => m.q === q && m.r === r)
+                const cubeMatch = selectedCardId ? myMatches.find((m) => m.slotQ === q && m.slotR === r) : undefined
+                const isCubeTarget = !!cubeMatch
                 const isCubed = me?.cubedHexes.includes(key) ?? false
                 const isLegalTarget =
                   !!selectedColor && !isCubed && canPlaceColor(selectedColor as TokenColor, stack)
                 const isIllegalTarget = !!selectedColor && !isLegalTarget
                 const tileClass = [
-                  isMatch ? styles.hexTileMatch : '',
+                  isCubeTarget ? styles.hexTileCubeMatch : '',
                   isLegalTarget ? styles.hexTileLegal : '',
                   isIllegalTarget ? styles.hexTileIllegal : '',
                 ].filter(Boolean).join(' ')
@@ -193,9 +194,23 @@ export default function HBoard() {
                     </AnimatePresence>
                     <button
                       className={styles.hexHit}
-                      disabled={!isMyTurn || !selectedColor || !isLegalTarget}
-                      onClick={() => handlePlaceToken(q, r)}
-                      onMouseEnter={() => setHoverInfo(stack.length ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}` : 'empty')}
+                      disabled={!isMyTurn || (selectedCardId ? !isCubeTarget : !selectedColor || !isLegalTarget)}
+                      onClick={() => {
+                        if (cubeMatch && selectedCardId) {
+                          handlePlaceCube(selectedCardId, cubeMatch.q, cubeMatch.r, cubeMatch.rotation)
+                        } else if (selectedColor) {
+                          handlePlaceToken(q, r)
+                        }
+                      }}
+                      onMouseEnter={() =>
+                        setHoverInfo(
+                          isCubeTarget
+                            ? 'Place cube here'
+                            : stack.length
+                            ? `${stack.join(' > ')}${isCubed ? ' (cube)' : ''}`
+                            : 'empty'
+                        )
+                      }
                       onMouseLeave={() => setHoverInfo(null)}
                     />
                   </div>
@@ -228,14 +243,11 @@ export default function HBoard() {
                 )
               })}
               {selectedCardId && (
-                <div className={styles.matches}>
-                  {myMatches.length === 0 && <p>No available matches right now.</p>}
-                  {myMatches.map((m, i) => (
-                    <button key={i} className={styles.smallBtn} onClick={() => handlePlaceCube(selectedCardId, m.q, m.r, m.rotation)}>
-                      Place cube at ({m.q},{m.r})
-                    </button>
-                  ))}
-                </div>
+                <p className={styles.matchHint}>
+                  {myMatches.length === 0
+                    ? 'No spot on your board matches this card yet.'
+                    : 'Click the glowing hex on your board to place the cube.'}
+                </p>
               )}
             </div>
           )}

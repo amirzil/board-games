@@ -360,3 +360,61 @@ if a user reports wrapping/scrolling again at a specific window size,
 that's the first place to look.
 
 Branch: `harmonies-board-v2`.
+
+## 2026-08-15 — Board column profile corrected; cube-placement UX overhauled; rotation matching investigated (no bug found)
+
+**Decided (board shape):** User gave an exact column spec against the
+real board: 5,4,5,4,5 hexes per column (23 total), vs. the previous plain
+radius-2 hexagon's 3,4,5,4,3 (19 total). Implemented by extending only
+the two end columns (q=±2) by one cell on each side in
+`shared/src/harmonies/h-data.ts` — the 4,5,4 middle columns are
+untouched. Coincidentally the pixel bounding box is unchanged (208x232 at
+HEX_SIZE=26), so no `HBoard.tsx`/`.module.css` layout changes were needed.
+
+**Investigated (rotation matching): no logic bug found.** User reported
+"if the chips are rotated the system doesn't recognize the match."
+Tested `findHabitatMatches`/`matchesHabitat`/`rotateOffset` directly via
+a standalone script (`npx tsx`, not through the UI) against a
+hand-built board state for all 6 rotations of the Fox card's pattern —
+every rotation was correctly recognized. Confirmed the client has no
+duplicate/independent matching logic (`grep` for `matchesHabitat` outside
+`shared/` found nothing) and that the exact `rotation` value from a
+match flows unchanged from `findHabitatMatches` through the "Match"
+button to the `placeAnimalCube` server action. Conclusion: the rotation
+math itself was never broken — see the UX fix below for what almost
+certainly drove the "doesn't work" perception. Live-verified after the
+UX fix by placing a card's 2-cell pattern in a genuinely rotated
+orientation (direction (1,-1) vs. the card's raw (1,0) offset) and
+confirming the system found and placed it correctly.
+
+**Decided (cube-placement UX):** Replaced the "Place cube at (0,0)"
+text-button list with the same interaction already used for token
+placement: `findHabitatMatches` now also returns each match's cube
+*destination* hex (`slotQ`/`slotR`, computed from the already-existing
+`cubeSlotHex` internally) rather than just the anchor search coordinate.
+`HBoard.tsx` uses this to make the actual destination hex glow gold
+(new `.hexTileCubeMatch` pulse animation) and directly clickable —
+clicking it fires `placeAnimalCube` with that match's original
+anchor+rotation. No coordinate list remains; a small hint line explains
+what to do or says no match exists yet.
+
+**Why this likely explains the original "rotation" complaint:** the old
+list showed the *anchor* cell's raw axial coordinates, which often isn't
+even the hex that receives the cube (see `cubeCellIndex`), and meant
+nothing spatially to a player looking at their board. If a rotated
+placement matched but the resulting anchor coordinate didn't obviously
+correspond to anything the player could relate to their board, it would
+be easy to conclude "nothing matched" even when the engine found it —
+the same discoverability-gap pattern as the earlier stacking-legality fix.
+
+**How to apply:** If a future report says an engine mechanism "doesn't
+work," reproduce it directly against the engine functions first (as
+here and in the stacking fix) before touching game logic — most of this
+project's "bugs" have turned out to be the UI not surfacing a correct
+result clearly enough, not incorrect results.
+
+**Also:** see `ERRORS.md` for a worktree/node_modules isolation pitfall
+hit while testing this — a worktree with no local `node_modules` can
+silently run against the *primary checkout's* code.
+
+Branch: `harmonies-match-fix`.
